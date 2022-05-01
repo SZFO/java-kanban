@@ -1,46 +1,17 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
-    private Integer taskId;
-    private String taskName;
-    private String taskDescription;
-    private TaskStatus taskStatus;
-    List<Integer> subTasks;
+    private List<Integer> subTasks;
 
-    public Epic(String taskName, String taskDescription) { // Конструктор для создания эпика
-        super(taskName, taskDescription);
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = TaskStatus.NEW;
+    public Epic(String name, String description) {
+        super(name, description);
         this.subTasks = new ArrayList<>();
     }
 
-    public Epic(Integer taskId, String taskName, String taskDescription) { // Конструктор для обновления эпика
-        super(taskName, taskDescription);
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-    }
-
-
-    @Override
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    @Override
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    @Override
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
-    }
-
-    @Override
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+   public Epic(Integer id, String name, String description ) {
+        super(id, name, description);
     }
 
     public List<Integer> getSubTasks() {
@@ -51,26 +22,31 @@ public class Epic extends Task {
         this.subTasks = subTasks;
     }
 
+    public void setSubTaskId(int subTaskId) {
+        subTasks.add(subTaskId);
+    }
+
+
     @Override
     public int hashCode() {
         int hash = 17;
-        if (taskId != 0) {
-            hash = hash + taskId.hashCode();
+        if (super.getId() != 0) {
+            hash = hash + super.getId().hashCode();
         }
         hash = hash * 31;
 
-        if (taskName != null) {
-            hash = hash + taskName.hashCode();
+        if (super.getName() != null) {
+            hash = hash + super.getName().hashCode();
         }
         hash = hash * 31;
 
-        if (taskDescription != null) {
-            hash = hash + taskDescription.hashCode();
+        if (super.getDescription() != null) {
+            hash = hash + super.getDescription().hashCode();
         }
         hash = hash * 31;
 
-        if (taskStatus != null) {
-            hash = hash + taskStatus.hashCode();
+        if (super.getStatus() != null) {
+            hash = hash + super.getStatus().hashCode();
         }
         return hash;
     }
@@ -80,20 +56,21 @@ public class Epic extends Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Epic epic = (Epic) obj;
-        return Objects.equals(taskId, epic.taskId) &&
-                Objects.equals(taskName, epic.taskName) &&
-                Objects.equals(taskDescription, epic.taskDescription) &&
-                Objects.equals(taskStatus, epic.taskStatus);
+        return Objects.equals(super.getId(), epic.getId()) &&
+                Objects.equals(super.getName(), epic.getName()) &&
+                Objects.equals(super.getDescription(), epic.getDescription()) &&
+                Objects.equals(super.getStatus(), epic.getStatus());
     }
 
     @Override
     public String toString() {
         return "Эпик{" +
-                "Название эпика='" + taskName + '\'' +
-                ", Описание эпика='" + taskDescription + '\'' +
-                ", Статус эпика=" + taskStatus +
-                ", ID эпика=" + taskId +
+                "Название эпика='" + super.getName() + '\'' +
+                ", Описание эпика='" + super.getDescription() + '\'' +
+                ", Статус эпика=" + super.getStatus() +
+                ", ID эпика=" + super.getId() +
                 '}';
     }
+
 
 }

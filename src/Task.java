@@ -1,61 +1,67 @@
 import java.util.Objects;
 
 public class Task {
-    private Integer taskId;
-    private String taskName;
-    private String taskDescription;
-    private TaskStatus taskStatus;
+    private Integer id;
+    private String name;
+    private String description;
+    private TaskStatus status;
 
-    public Task(String taskName, String taskDescription) { // Конструктор для создания задачи
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = TaskStatus.NEW;
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
     }
 
-    public Task(Integer taskId, String taskName, String taskDescription, TaskStatus taskStatus) { // Конструктор для обновления задачи
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = taskStatus;
+    public Task(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
-
-    public Integer getTaskId() {
-        return taskId;
+    public Integer getId() {
+        return id;
     }
 
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
+    public TaskStatus getStatus() {
+        return status;
     }
 
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
     public int hashCode() {
         int hash = 17;
-        if (taskId != 0) {
-            hash = hash + taskId.hashCode();
+        if (id != 0) {
+            hash = hash + id.hashCode();
         }
         hash = hash * 31;
 
-        if (taskName != null) {
-            hash = hash + taskName.hashCode();
+        if (name != null) {
+            hash = hash + name.hashCode();
         }
         hash = hash * 31;
 
-        if (taskDescription != null) {
-            hash = hash + taskDescription.hashCode();
+        if (description != null) {
+            hash = hash + description.hashCode();
         }
         hash = hash * 31;
 
-        if (taskStatus != null) {
-            hash = hash + taskStatus.hashCode();
+        if (status != null) {
+            hash = hash + status.hashCode();
         }
         return hash;
     }
@@ -65,19 +71,21 @@ public class Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task task = (Task) obj;
-        return Objects.equals(taskId, task.taskId) &&
-                Objects.equals(taskName, task.taskName) &&
-                Objects.equals(taskDescription, task.taskDescription) &&
-                Objects.equals(taskStatus, task.taskStatus);
+        return Objects.equals(id, task.id) &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(status, task.status);
     }
 
     @Override
     public String toString() {
         return "Задача{" +
-                "Название задачи='" + taskName + '\'' +
-                ", Описание задачи='" + taskDescription + '\'' +
-                ", Статус задачи=" + taskStatus +
-                ", ID задачи=" + taskId +
+                "Название задачи='" + name + '\'' +
+                ", Описание задачи='" + description + '\'' +
+                ", Статус задачи=" + status +
+                ", ID задачи=" + id +
                 '}';
     }
+
+
 }

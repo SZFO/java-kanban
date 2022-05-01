@@ -1,75 +1,41 @@
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private Integer taskId;
-    private String taskName;
-    private String taskDescription;
-    private TaskStatus taskStatus;
-    private Integer epicId;
+    private Epic epic;
 
-    public SubTask(String taskName, String taskDescription) { // Конструктор для создания подзадачи
-        super(taskName, taskDescription);
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = TaskStatus.NEW;
+    public SubTask(String name, String description, Epic epic) { // Конструктор для создания подзадачи
+        super(name, description);
+        this.epic = epic;
     }
 
-    public SubTask(Integer taskId, String taskName, String taskDescription, TaskStatus taskStatus) { // Конструктор для обновления подзадачи
-        super(taskId, taskName, taskDescription, taskStatus);
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = taskStatus;
+    public Epic getEpic() {
+        return epic;
     }
 
-    @Override
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    @Override
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
-    }
-
-    @Override
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    @Override
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public Integer getEpicId() {
-        return epicId;
-    }
-
-    public void setEpicId(Integer epicId) {
-        this.epicId = epicId;
+    public void setEpic(Epic epic) {
+        this.epic = epic;
     }
 
     @Override
     public int hashCode() {
         int hash = 17;
-        if (taskId != 0) {
-            hash = hash + taskId.hashCode();
+        if (super.getId() != 0) {
+            hash = hash + super.getId().hashCode();
         }
         hash = hash * 31;
 
-        if (taskName != null) {
-            hash = hash + taskName.hashCode();
+        if (super.getName() != null) {
+            hash = hash + super.getName().hashCode();
         }
         hash = hash * 31;
 
-        if (taskDescription != null) {
-            hash = hash + taskDescription.hashCode();
+        if (super.getDescription() != null) {
+            hash = hash + super.getDescription().hashCode();
         }
         hash = hash * 31;
 
-        if (taskStatus != null) {
-            hash = hash + taskStatus.hashCode();
+        if (super.getStatus() != null) {
+            hash = hash + super.getStatus().hashCode();
         }
         return hash;
     }
@@ -79,20 +45,20 @@ public class SubTask extends Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         SubTask subTask = (SubTask) obj;
-        return Objects.equals(taskId, subTask.taskId) &&
-                Objects.equals(taskName, subTask.taskName) &&
-                Objects.equals(taskDescription, subTask.taskDescription) &&
-                Objects.equals(taskStatus, subTask.taskStatus);
+        return Objects.equals(super.getId(), subTask.getId()) &&
+                Objects.equals(super.getName(), subTask.getName()) &&
+                Objects.equals(super.getDescription(), subTask.getDescription()) &&
+                Objects.equals(super.getStatus(), subTask.getStatus());
     }
 
     @Override
     public String toString() {
         return "Подзадача{" +
-                "Название подзадачи='" + taskName + '\'' +
-                ", Описание подзадачи='" + taskDescription + '\'' +
-                ", Статус подзадачи=" + taskStatus +
-                ", ID подзадачи=" + taskId +
+                "Название подзадачи='" + super.getName() + '\'' +
+                ", Описание подзадачи='" + super.getDescription() + '\'' +
+                ", Статус подзадачи=" + super.getStatus() +
+                ", ID подзадачи=" + super.getId() +
+                ", Входит в эпик='" + epic.getName() + '\'' +
                 '}';
     }
-
 }

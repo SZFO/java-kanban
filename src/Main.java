@@ -3,7 +3,7 @@ public class Main {
         TaskManager taskManager = new TaskManager();
 
         System.out.println("- Получение списка всех задач -");
-        taskManager.printListAllTasks();
+        taskManager.printAllTasks();
 
         System.out.println();
         System.out.println("- Ввод задач/подзадач/эпиков -");
@@ -15,13 +15,13 @@ public class Main {
         Epic epic1 = new Epic("Эпик №1", "Завести автомобиль");
         Epic epic2 = new Epic("Эпик №2", "Выехать со двора");
         Epic epic3 = new Epic("Эпик №3", "Тестируем статус пустого эпика");
-        SubTask subTask1 = new SubTask("Подзадача №1", "Вставить ключ в замок зажигания");
-        SubTask subTask2 = new SubTask("Подзадача №2", "Установить коробку передач на нейтраль");
-        SubTask subTask3 = new SubTask("Подзадача №3", "Повернуть ключ в замке зажигания");
-        SubTask subTask4 = new SubTask("Подзадача №4", "Пристегнуть ремень безопасности");
-        SubTask subTask5 = new SubTask("Подзадача №5", "Открыть ворота парковки");
-        SubTask subTask6 = new SubTask("Подзадача №6", "Установить коробку передач на первую передачу");
-        SubTask subTask7 = new SubTask("Подзадача №7", "Отпустить сцепление");
+        SubTask subTask1 = new SubTask("Подзадача №1", "Вставить ключ в замок зажигания", epic1);
+        SubTask subTask2 = new SubTask("Подзадача №2", "Установить коробку передач на нейтраль", epic1);
+        SubTask subTask3 = new SubTask("Подзадача №3", "Повернуть ключ в замке зажигания", epic1);
+        SubTask subTask4 = new SubTask("Подзадача №4", "Пристегнуть ремень безопасности", epic2);
+        SubTask subTask5 = new SubTask("Подзадача №5", "Открыть ворота парковки", epic2);
+        SubTask subTask6 = new SubTask("Подзадача №6", "Установить коробку передач на первую передачу", epic2);
+        SubTask subTask7 = new SubTask("Подзадача №7", "Отпустить сцепление", epic2);
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -29,76 +29,71 @@ public class Main {
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
         taskManager.addEpic(epic3);
-        taskManager.addSubTask(epic1.getTaskId(), subTask1);
-        taskManager.addSubTask(epic1.getTaskId(), subTask2);
-        taskManager.addSubTask(epic1.getTaskId(), subTask3);
-        taskManager.addSubTask(epic2.getTaskId(), subTask4);
-        taskManager.addSubTask(epic2.getTaskId(), subTask5);
-        taskManager.addSubTask(epic2.getTaskId(), subTask6);
-        taskManager.addSubTask(epic2.getTaskId(), subTask7);
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+        taskManager.addSubTask(subTask3);
+        taskManager.addSubTask(subTask4);
+        taskManager.addSubTask(subTask5);
+        taskManager.addSubTask(subTask6);
+        taskManager.addSubTask(subTask7);
         System.out.println("- Задачи/подзадачи/эпики сохранены -");
 
         System.out.println();
         System.out.println("- Получение списка всех задач -");
-        taskManager.printListAllTasks();
+        taskManager.printAllTasks();
 
         System.out.println();
         System.out.println("- Получение задачи/подзадачи/эпика по идентификатору -");
-        taskManager.getTask(task2.getTaskId());
-        taskManager.getTask(task4.getTaskId());
-        taskManager.getEpic(epic2.getTaskId());
-        taskManager.getSubTask(subTask1.getTaskId());
-        taskManager.getSubTask(subTask5.getTaskId());
-        taskManager.getSubTask(subTask6.getTaskId());
-
+        System.out.println(taskManager.getTask(task2.getId()));
+        System.out.println(taskManager.getTask(task4.getId()));
+        System.out.println(taskManager.getTask(epic2.getId()));
+        System.out.println(taskManager.getTask(subTask1.getId()));
+        System.out.println(taskManager.getTask(subTask5.getId()));
+        System.out.println(taskManager.getTask(subTask6.getId()));
 
         System.out.println();
         System.out.println("- Обновление задачи/подзадачи/эпика -");
-        task2 = new Task(task2.getTaskId(), "Задача №2", "Проверить давление в шинах", TaskStatus.DONE);
-        task3 = new Task(task3.getTaskId(), "Задача №3", "Проверить состояние стеклоочистителей", TaskStatus.IN_PROGRESS);
-        subTask2 = new SubTask(subTask2.getTaskId(), "Подзадача №2", "Установить коробку передач на нейтраль", TaskStatus.DONE);
-        subTask4 = new SubTask(subTask4.getTaskId(), "Подзадача №4", "Пристегнуть ремень безопасности", TaskStatus.DONE);
-        subTask5 = new SubTask(subTask5.getTaskId(), "Подзадача №5", "Открыть ворота парковки", TaskStatus.DONE);
-        subTask6 = new SubTask(subTask6.getTaskId(), "Подзадача №6", "Установить коробку передач на первую передачу", TaskStatus.DONE);
-        epic2 = new Epic(epic2.getTaskId(), "Эпик №2", "Выехать с парковки"); // В эпике статус вручную не меняется.
-        taskManager.updTask(task2);
-        taskManager.updTask(task3);
-        taskManager.updSubTask(subTask2);
-        taskManager.updSubTask(subTask4);
-        taskManager.updSubTask(subTask5);
-        taskManager.updSubTask(subTask6);
-        taskManager.updEpic(epic2);
-        taskManager.printListAllTasks();
+        task2 = new Task(task2.getName(), task2.getDescription());
+        taskManager.updateTask(task2, 2, TaskStatus.DONE);
+        task3 = new Task(task3.getName(), task3.getDescription());
+        taskManager.updateTask(task3, 3, TaskStatus.IN_PROGRESS);
+        subTask2 = new SubTask(subTask2.getName(), subTask2.getDescription(), epic1);
+        taskManager.updateSubTask(subTask2, 9, TaskStatus.DONE);
+        subTask4 = new SubTask(subTask4.getName(), subTask4.getDescription(), epic2);
+        taskManager.updateSubTask(subTask4, 11, TaskStatus.DONE);
+        subTask5 = new SubTask(subTask5.getName(), subTask5.getDescription(), epic2);
+        taskManager.updateSubTask(subTask5, 12, TaskStatus.DONE);
+        subTask6 = new SubTask(subTask6.getName(), subTask6.getDescription(), epic2);
+        taskManager.updateSubTask(subTask6, 13, TaskStatus.DONE);
+        epic2 = new Epic(epic2.getId(), "Эпик №2", "Выехать с парковки"); // В эпике статус вручную не меняется.
+        taskManager.updateEpic(epic2);
+        taskManager.printAllTasks();
 
         System.out.println();
         System.out.println("- Получение списка всех подзадач определённого эпика -");
-        taskManager.printListSubTaskInEpic(epic2.getTaskId());
-
-
+        System.out.println(taskManager.getSubTasksInEpic(epic2));
 
         System.out.println();
         System.out.println("- Удаляем подзадачу №7 со статусом NEW в эпике №2. Проверяем, что эпик перешёл в статус DONE -");
-        taskManager.delSubTask(subTask7.getTaskId());
-        taskManager.getEpic(epic2.getTaskId());
-
+        taskManager.deleteSubTask(subTask7.getId());
+        System.out.println(taskManager.getTask(epic2.getId()));
 
         System.out.println();
         System.out.println("- Удаление задачи/подзадачи/эпика по идентификатору. Вывод списка оставшихся задач -");
-        taskManager.delTask(task2.getTaskId());
-        taskManager.delTask(task3.getTaskId());
-        taskManager.delSubTask(subTask1.getTaskId());
-        taskManager.delSubTask(subTask5.getTaskId());
-        taskManager.delEpic(epic2.getTaskId());
-        taskManager.printListAllTasks();
+        taskManager.deleteTask(task2.getId());
+        taskManager.deleteTask(task3.getId());
+        taskManager.deleteSubTask(subTask1.getId());
+        taskManager.deleteSubTask(subTask5.getId());
+        taskManager.deleteEpic(epic2.getId());
+        taskManager.printAllTasks();
 
         System.out.println();
         System.out.println("- Удаление списка задач из трекера -");
-        taskManager.delAllTasks();
+        taskManager.deleteAllTasks();
 
         System.out.println();
         System.out.println("- Получение списка всех задач -");
-        taskManager.printListAllTasks();
+        taskManager.printAllTasks();
 
     }
-
 }
