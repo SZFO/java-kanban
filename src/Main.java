@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         System.out.println("- Получение списка всех задач -");
         taskManager.printAllTasks();
@@ -50,6 +50,10 @@ public class Main {
         System.out.println(taskManager.getTask(subTask1.getId()));
         System.out.println(taskManager.getTask(subTask5.getId()));
         System.out.println(taskManager.getTask(subTask6.getId()));
+
+        System.out.println();
+        System.out.println("- Вывод истории просмотра задач -");
+        taskManager.getHistory().forEach(System.out::println);
 
         System.out.println();
         System.out.println("- Обновление задачи/подзадачи/эпика -");
