@@ -46,10 +46,10 @@ public class Main {
         System.out.println("- Получение задачи/подзадачи/эпика по идентификатору -");
         System.out.println(taskManager.getTask(task2.getId()));
         System.out.println(taskManager.getTask(task4.getId()));
-        System.out.println(taskManager.getTask(epic2.getId()));
-        System.out.println(taskManager.getTask(subTask1.getId()));
-        System.out.println(taskManager.getTask(subTask5.getId()));
-        System.out.println(taskManager.getTask(subTask6.getId()));
+        System.out.println(taskManager.getEpic(epic2.getId()));
+        System.out.println(taskManager.getSubTask(subTask1.getId()));
+        System.out.println(taskManager.getSubTask(subTask5.getId()));
+        System.out.println(taskManager.getSubTask(subTask6.getId()));
 
         System.out.println();
         System.out.println("- Вывод истории просмотра задач -");
@@ -75,12 +75,12 @@ public class Main {
 
         System.out.println();
         System.out.println("- Получение списка всех подзадач определённого эпика -");
-        System.out.println(taskManager.getSubTasksInEpic(epic2));
+        System.out.println(taskManager.subTasksInEpicToString(epic2));
 
         System.out.println();
         System.out.println("- Удаляем подзадачу №7 со статусом NEW в эпике №2. Проверяем, что эпик перешёл в статус DONE -");
         taskManager.deleteSubTask(subTask7.getId());
-        System.out.println(taskManager.getTask(epic2.getId()));
+        System.out.println(taskManager.getEpic(epic2.getId()));
 
         System.out.println();
         System.out.println("- Удаление задачи/подзадачи/эпика по идентификатору. Вывод списка оставшихся задач -");

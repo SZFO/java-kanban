@@ -18,8 +18,8 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
-
-    Integer generateId() {  // Обновление уникального ID для задач
+    // Обновление уникального ID для задач
+    private Integer generateId() {
         return id++;
     }
 
@@ -35,49 +35,57 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println(entry.getValue());
         });
     }
+
     @Override
     public void addTask(Task task) {
         task.setId(generateId());
         this.task.put(task.getId(), task);
     }
+
     @Override
     public void addEpic(Epic epic) {
         epic.setId(generateId());
         this.epic.put(epic.getId(), epic);
     }
+
     @Override
     public void addSubTask(SubTask subTask) {
         subTask.setId(generateId());
         this.subTask.put(subTask.getId(), subTask);
         subTask.getEpic().setSubTaskId(subTask.getId());
     }
+
     @Override
     public Task getTask(Integer id) {
-
-        if (task.containsKey(id)) {
-            Map<Integer, Task> tempMap = new HashMap<>();
-            historyManager.add(task.get(id));
-            tempMap.put(id, task.get(id));
-            return tempMap.put(id, task.get(id));
-        } else if (epic.containsKey(id)) {
-            Map<Integer, Epic> tempMap = new HashMap<>();
-            historyManager.add(epic.get(id));
-            tempMap.put(id, epic.get(id));
-            return tempMap.put(id, epic.get(id));
-        } else if (subTask.containsKey(id)) {
-            Map<Integer, SubTask> tempMap = new HashMap<>();
-            historyManager.add(subTask.get(id));
-            tempMap.put(id, subTask.get(id));
-            return tempMap.put(id, subTask.get(id));
-        }
-        return null;
+        Map<Integer, Task> tempMap = new HashMap<>();
+        historyManager.add(task.get(id));
+        tempMap.put(id, task.get(id));
+        return tempMap.put(id, task.get(id));
     }
+
+    @Override
+    public SubTask getSubTask(Integer id) {
+        Map<Integer, SubTask> tempMap = new HashMap<>();
+        historyManager.add(subTask.get(id));
+        tempMap.put(id, subTask.get(id));
+        return tempMap.put(id, subTask.get(id));
+    }
+
+    @Override
+    public Epic getEpic(Integer id) {
+        Map<Integer, Epic> tempMap = new HashMap<>();
+        historyManager.add(epic.get(id));
+        tempMap.put(id, epic.get(id));
+        return tempMap.put(id, epic.get(id));
+    }
+
     @Override
     public void updateTask(Task task, Integer id, TaskStatus status) {
         task.setStatus(status);
         task.setId(id);
         this.task.put(id, task);
     }
+
     @Override
     public void updateSubTask(SubTask subTask, Integer id, TaskStatus status) {
         subTask.setStatus(status);
@@ -85,6 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTask.put(id, subTask);
         subTask.getEpic().setStatus(calculateEpicStatus(subTask.getEpic()));
     }
+
     @Override
     public void updateEpic(Epic epic) {
         Epic pastObjEpic = this.epic.get(epic.getId());
@@ -97,8 +106,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epic.setStatus(calculateEpicStatus(epic));
     }
+
     @Override
-    public String getSubTasksInEpic(Epic epic) {
+    public String subTasksInEpicToString(Epic epic) {
         if (epic.getSubTasks() == null) {
             return "У эпика отсутствуют подзадачи";
         } else {
@@ -113,6 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
             return stb.toString();
         }
     }
+
     @Override
     public void deleteTask(Integer id) {
         if (task.isEmpty()) {
@@ -125,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         task.remove(id);
     }
+
     @Override
     public void deleteSubTask(Integer id) {
         if (subTask.isEmpty()) {
@@ -160,6 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         this.epic.remove(id);
     }
+
     @Override
     public void deleteAllTasks() {
         boolean allTasksClean = task.isEmpty() && subTask.isEmpty() && epic.isEmpty();
@@ -173,8 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
-    public TaskStatus calculateEpicStatus(Epic epic) {
+    private TaskStatus calculateEpicStatus(Epic epic) {
         int amountSubtask = 0;
         int amountStatusNew = 0;
         int amountStatusDone = 0;
@@ -201,6 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return TaskStatus.IN_PROGRESS;
     }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
