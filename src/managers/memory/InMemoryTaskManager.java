@@ -1,5 +1,13 @@
-import java.io.PrintWriter;
+package managers.memory;
+
+import managers.Managers;
+import managers.history.HistoryManager;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +17,6 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTask;
     private Map<Integer, Epic> epic;
     private HistoryManager historyManager;
-    private PrintWriter pw;
-
 
     public InMemoryTaskManager() {
         this.id = 1;
@@ -18,25 +24,15 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTask = new HashMap<>();
         this.epic = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
-        pw = new PrintWriter(System.out, true);
-    }
-
-    // Обновление уникального ID для задач
-    private Integer generateId() {
-        return id++;
     }
 
     @Override
-    public void printAllTasks() {
-        task.entrySet().forEach(entry -> {
-            pw.println(entry.getValue());
-        });
-        epic.entrySet().forEach(entry -> {
-            pw.println(entry.getValue());
-        });
-        subTask.entrySet().forEach(entry -> {
-            pw.println(entry.getValue());
-        });
+    public List<Task> getAllTasks() {
+        List<Task> allTasks = new LinkedList<>();
+        allTasks.addAll(task.values());
+        allTasks.addAll(epic.values());
+        allTasks.addAll(subTask.values());
+        return allTasks;
     }
 
     @Override
@@ -129,28 +125,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
-        if (task.isEmpty()) {
-            pw.println("Список задач трекера пуст.");
-            return;
-        }
-        if (!task.containsKey(id)) {
-            pw.println("Задача с указанным номером отсутствует в списке трекера.");
-            return;
-        }
         task.remove(id);
         historyManager.remove(id);
     }
 
     @Override
     public void deleteSubTask(Integer id) {
-        if (subTask.isEmpty()) {
-            pw.println("Список подзадач трекера пуст.");
-            return;
-        }
-        if (!subTask.containsKey(id)) {
-            pw.println("Подзадача с указанным номером отсутствует в списке трекера.");
-            return;
-        }
         SubTask subTask = this.subTask.get(id);
         Epic epic = subTask.getEpic();
         List<Integer> subTasks = epic.getSubTasks();
@@ -162,14 +142,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(Integer id) {
-        if (epic.isEmpty()) {
-            pw.println("Список эпиков трекера пуст.");
-            return;
-        }
-        if (!epic.containsKey(id)) {
-            pw.println("Эпик с указанным номером отсутствует в списке трекера.");
-            return;
-        }
         Epic epic = this.epic.get(id);
         List<Integer> subTasks = epic.getSubTasks();
         for (Integer subTask : subTasks) {
@@ -182,15 +154,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        boolean allTasksClean = task.isEmpty() && subTask.isEmpty() && epic.isEmpty();
-        if (!allTasksClean) {
-            task.clear();
-            subTask.clear();
-            epic.clear();
-            pw.println("Список задач трекера очищен.");
-        } else {
-            pw.println("Список задач трекера уже пуст.");
-        }
+        task.clear();
+        subTask.clear();
+        epic.clear();
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
+    private Integer generateId() {
+        return id++;
     }
 
     private TaskStatus calculateEpicStatus(Epic epic) {
@@ -219,10 +194,5 @@ public class InMemoryTaskManager implements TaskManager {
             return TaskStatus.DONE;
         }
         return TaskStatus.IN_PROGRESS;
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return historyManager.getHistory();
     }
 }

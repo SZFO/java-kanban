@@ -1,8 +1,14 @@
+package managers.memory;
+
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+
 import java.util.List;
 
 public interface TaskManager {
 
-    void printAllTasks();
+    List<Task> getAllTasks();
 
     void addTask(Task task);
 

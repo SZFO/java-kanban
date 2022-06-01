@@ -1,3 +1,7 @@
+package tasks;
+
+import managers.memory.TaskStatus;
+
 import java.util.Objects;
 
 public class Task {
@@ -71,20 +75,12 @@ public class Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task task = (Task) obj;
-        return Objects.equals(id, task.id) &&
-                Objects.equals(name, task.name) &&
-                Objects.equals(description, task.description) &&
-                Objects.equals(status, task.status);
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(status, task.status);
     }
 
     @Override
     public String toString() {
-        return "Задача{" +
-                "Название задачи='" + name + '\'' +
-                ", Описание задачи='" + description + '\'' +
-                ", Статус задачи=" + status +
-                ", ID задачи=" + id +
-                '}';
+        return "Задача{" + "Название задачи='" + name + '\'' + ", Описание задачи='" + description + '\'' + ", Статус задачи=" + status + ", ID задачи=" + id + '}';
     }
 
 

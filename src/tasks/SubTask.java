@@ -1,3 +1,5 @@
+package tasks;
+
 import java.util.Objects;
 
 public class SubTask extends Task {
@@ -45,20 +47,11 @@ public class SubTask extends Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         SubTask subTask = (SubTask) obj;
-        return Objects.equals(super.getId(), subTask.getId()) &&
-                Objects.equals(super.getName(), subTask.getName()) &&
-                Objects.equals(super.getDescription(), subTask.getDescription()) &&
-                Objects.equals(super.getStatus(), subTask.getStatus());
+        return Objects.equals(super.getId(), subTask.getId()) && Objects.equals(super.getName(), subTask.getName()) && Objects.equals(super.getDescription(), subTask.getDescription()) && Objects.equals(super.getStatus(), subTask.getStatus());
     }
 
     @Override
     public String toString() {
-        return "Подзадача{" +
-                "Название подзадачи='" + super.getName() + '\'' +
-                ", Описание подзадачи='" + super.getDescription() + '\'' +
-                ", Статус подзадачи=" + super.getStatus() +
-                ", ID подзадачи=" + super.getId() +
-                ", Входит в эпик='" + epic.getName() + '\'' +
-                '}';
+        return "Подзадача{" + "Название подзадачи='" + super.getName() + '\'' + ", Описание подзадачи='" + super.getDescription() + '\'' + ", Статус подзадачи=" + super.getStatus() + ", ID подзадачи=" + super.getId() + ", Входит в эпик='" + epic.getName() + '\'' + '}';
     }
 }

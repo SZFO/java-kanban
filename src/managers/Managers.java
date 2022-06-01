@@ -1,3 +1,10 @@
+package managers;
+
+import managers.history.HistoryManager;
+import managers.history.InMemoryHistoryManager;
+import managers.memory.InMemoryTaskManager;
+import managers.memory.TaskManager;
+
 public abstract class Managers {
 
     public static TaskManager getDefault() {

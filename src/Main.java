@@ -1,8 +1,15 @@
+import managers.Managers;
+import managers.memory.TaskManager;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+
 import java.io.PrintWriter;
 
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
+
 
 /*      Создаём объект типа PrintWriter для консольного вывода с автоматической очисткой потока вывода
         На каникулах прочитал у Г.Шилдта, что PrintWriter является рекомендуемым средством вывода данных на консоль.
@@ -10,7 +17,7 @@ public class Main {
         PrintWriter pw = new PrintWriter(System.out, true);
 
         pw.println("- Получение списка всех задач -");
-        taskManager.printAllTasks();
+        taskManager.getAllTasks().forEach(pw::println);
 
         pw.println();
         pw.println("- Cоздаём две задачи, эпик с тремя подзадачами и эпик без подзадач -");
@@ -34,7 +41,7 @@ public class Main {
 
         pw.println();
         pw.println("- Получение списка всех задач -");
-        taskManager.printAllTasks();
+        taskManager.getAllTasks().forEach(pw::println);
 
         pw.println();
         pw.println("- Получение задачи/подзадачи/эпика по идентификатору -");
