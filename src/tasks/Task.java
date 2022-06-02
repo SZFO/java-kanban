@@ -1,7 +1,5 @@
 package tasks;
 
-import managers.memory.TaskStatus;
-
 import java.util.Objects;
 
 public class Task {
@@ -16,10 +14,10 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-    public Task(Integer id, String name, String description) {
-        this.id = id;
+    public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
+        this.status = status;
     }
 
     public Integer getId() {

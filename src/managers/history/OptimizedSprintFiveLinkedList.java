@@ -4,12 +4,6 @@ import tasks.Task;
 
 import java.util.*;
 
-/*  Класс с собственной реализацией двусвязного списка не делал отдельно, потому что в ТЗ спринта №5 в подсказках была
-    следующая информация:
-    "Отдельный класс для списка создавать не нужно — реализуйте его прямо в классе InMemoryHistoryManager.
-    А вот отдельный класс Node для узла списка необходимо добавить."
-    Хотя конечно, логичней его сделать отдельно, в Slack в группе также считают.
-*/
 public class OptimizedSprintFiveLinkedList<T> {
     private Map<Integer, Node<Task>> nodeTaskHistory = new HashMap<>();
     private Node<Task> head;

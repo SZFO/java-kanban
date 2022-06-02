@@ -3,12 +3,17 @@ package managers.memory;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
+import tasks.TaskStatus;
 
 import java.util.List;
 
 public interface TaskManager {
 
     List<Task> getAllTasks();
+
+    List<SubTask> getAllSubTasks();
+
+    List<Epic> getAllEpics();
 
     void addTask(Task task);
 
@@ -22,9 +27,9 @@ public interface TaskManager {
 
     Epic getEpic(Integer id);
 
-    void updateTask(Task task, Integer id, TaskStatus status);
+    void updateTask(Task task);
 
-    void updateSubTask(SubTask subTask, Integer id, TaskStatus status);
+    void updateSubTask(SubTask subTask);
 
     void updateEpic(Epic epic);
 

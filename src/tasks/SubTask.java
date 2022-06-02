@@ -5,8 +5,8 @@ import java.util.Objects;
 public class SubTask extends Task {
     private Epic epic;
 
-    public SubTask(String name, String description, Epic epic) { // Конструктор для создания подзадачи
-        super(name, description);
+    public SubTask(String name, String description, TaskStatus status, Epic epic) { // Конструктор для создания подзадачи
+        super(name, description, status);
         this.epic = epic;
     }
 

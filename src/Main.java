@@ -1,8 +1,6 @@
 import managers.Managers;
 import managers.memory.TaskManager;
-import tasks.Epic;
-import tasks.SubTask;
-import tasks.Task;
+import tasks.*;
 
 import java.io.PrintWriter;
 
@@ -10,25 +8,25 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
 
+        //  Создаём объект типа PrintWriter для консольного вывода с автоматической очисткой потока вывода
 
-/*      Создаём объект типа PrintWriter для консольного вывода с автоматической очисткой потока вывода
-        На каникулах прочитал у Г.Шилдта, что PrintWriter является рекомендуемым средством вывода данных на консоль.
-*/
         PrintWriter pw = new PrintWriter(System.out, true);
 
         pw.println("- Получение списка всех задач -");
         taskManager.getAllTasks().forEach(pw::println);
+        taskManager.getAllEpics().forEach(pw::println);
+        taskManager.getAllSubTasks().forEach(pw::println);
 
         pw.println();
         pw.println("- Cоздаём две задачи, эпик с тремя подзадачами и эпик без подзадач -");
 
-        Task task1 = new Task("Задача №1", "Проверить уровень масла");
-        Task task2 = new Task("Задача №2", "Проверить давление в шинах");
+        Task task1 = new Task("Задача №1", "Проверить уровень масла", TaskStatus.NEW);
+        Task task2 = new Task("Задача №2", "Проверить давление в шинах", TaskStatus.NEW);
         Epic epic1 = new Epic("Эпик №1", "Завести автомобиль");
         Epic epic2 = new Epic("Эпик №2", "Пустой эпик");
-        SubTask subTask1 = new SubTask("Подзадача №1", "Вставить ключ в замок зажигания", epic1);
-        SubTask subTask2 = new SubTask("Подзадача №2", "Установить коробку передач на нейтраль", epic1);
-        SubTask subTask3 = new SubTask("Подзадача №3", "Повернуть ключ в замке зажигания", epic1);
+        SubTask subTask1 = new SubTask("Подзадача №1", "Вставить ключ в замок зажигания", TaskStatus.NEW, epic1);
+        SubTask subTask2 = new SubTask("Подзадача №2", "Установить коробку передач на нейтраль", TaskStatus.NEW, epic1);
+        SubTask subTask3 = new SubTask("Подзадача №3", "Повернуть ключ в замке зажигания", TaskStatus.NEW, epic1);
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addEpic(epic1);
@@ -42,6 +40,27 @@ public class Main {
         pw.println();
         pw.println("- Получение списка всех задач -");
         taskManager.getAllTasks().forEach(pw::println);
+        taskManager.getAllEpics().forEach(pw::println);
+        taskManager.getAllSubTasks().forEach(pw::println);
+
+
+        System.out.println();
+        System.out.println("- Обновление задачи/подзадачи/эпика -");
+        task2 = new Task(task2.getName(), task2.getDescription(), TaskStatus.DONE);
+        taskManager.updateTask(task2);
+        subTask1 = new SubTask(subTask1.getName(), subTask1.getDescription(), TaskStatus.DONE, epic1);
+        taskManager.updateSubTask(subTask1);
+        subTask2 = new SubTask(subTask2.getName(), subTask2.getDescription(), TaskStatus.DONE, epic1);
+        taskManager.updateSubTask(subTask2);
+        subTask3 = new SubTask(subTask3.getName(), subTask3.getDescription(), TaskStatus.DONE, epic1);
+        taskManager.updateSubTask(subTask3);
+
+
+        pw.println();
+        pw.println("- Получение списка всех задач -");
+        taskManager.getAllTasks().forEach(pw::println);
+        taskManager.getAllEpics().forEach(pw::println);
+        taskManager.getAllSubTasks().forEach(pw::println);
 
         pw.println();
         pw.println("- Получение задачи/подзадачи/эпика по идентификатору -");
