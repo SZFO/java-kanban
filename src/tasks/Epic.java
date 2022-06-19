@@ -1,29 +1,32 @@
 package tasks;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Epic extends Task {
-    private List<Integer> subTasks;
+
+    private List<SubTask> subTasks;
 
     public Epic(String name, String description) {
         super(name, description);
         this.subTasks = new ArrayList<>();
     }
 
-    public List<Integer> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return subTasks;
     }
 
-    public void setSubTasks(List<Integer> subTasks) {
+    public void setSubTasks(List<SubTask> subTasks) {
         this.subTasks = subTasks;
     }
 
-    public void setSubTaskId(int subTaskId) {
-        subTasks.add(subTaskId);
+    public void addSubTasks(SubTask subTask) {
+        subTasks.add(subTask);
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
 
     @Override
     public int hashCode() {
@@ -59,6 +62,29 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Эпик{" + "Название эпика='" + super.getName() + '\'' + ", Описание эпика='" + super.getDescription() + '\'' + ", Статус эпика=" + super.getStatus() + ", ID эпика=" + super.getId() + '}';
+        return "Эпик{" + "Название эпика='" + super.getName() + '\'' + ", Описание эпика='" + super.getDescription() + '\'' + ", Статус эпика='" + super.getStatus() + '\'' + ", ID эпика='" + super.getId() + '\'' + '}';
+    }
+
+    public void calculateEpicStatus() {
+        int amountStatusNew = 0;
+        int amountStatusDone = 0;
+        for (SubTask subTask : getSubTasks()) {
+            if (subTask.getStatus().equals(TaskStatus.IN_PROGRESS)) {
+                setStatus(TaskStatus.IN_PROGRESS);
+            }
+            if (subTask.getStatus().equals(TaskStatus.DONE)) {
+                amountStatusDone++;
+            }
+            if (subTask.getStatus().equals(TaskStatus.NEW)) {
+                amountStatusNew++;
+            }
+        }
+        if (amountStatusDone == getSubTasks().size() && !getSubTasks().isEmpty()) {
+            setStatus(TaskStatus.DONE);
+        } else if (amountStatusDone > 0 && amountStatusDone < getSubTasks().size()) {
+            setStatus(TaskStatus.IN_PROGRESS);
+        } else if (getSubTasks().isEmpty() || amountStatusNew == getSubTasks().size()) {
+            setStatus(TaskStatus.NEW);
+        }
     }
 }

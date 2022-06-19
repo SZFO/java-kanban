@@ -28,6 +28,10 @@ public class Task {
         this.id = id;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public TaskStatus getStatus() {
         return status;
     }
@@ -43,6 +47,7 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
 
     @Override
     public int hashCode() {
@@ -78,7 +83,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Задача{" + "Название задачи='" + name + '\'' + ", Описание задачи='" + description + '\'' + ", Статус задачи=" + status + ", ID задачи=" + id + '}';
+        return "Задача{" + "Название задачи='" + name + '\'' + ", Описание задачи='" + description + '\'' + ", Статус задачи='" + status + '\'' + ", ID задачи='" + id + '\'' + '}';
     }
 
 

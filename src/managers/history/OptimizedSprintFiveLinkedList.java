@@ -41,8 +41,12 @@ public class OptimizedSprintFiveLinkedList<T> {
         return tasksHistory;
     }
 
+
     public void remove(int id) {
-        removeNode(nodeTaskHistory.get(id));
+        if (nodeTaskHistory.containsKey(id)) {
+            removeNode(nodeTaskHistory.get(id));
+            nodeTaskHistory.remove(id);
+        }
     }
 
     public void removeNode(Node<Task> node) {

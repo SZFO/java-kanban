@@ -3,17 +3,17 @@ package managers.memory;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
-import tasks.TaskStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
 
-    List<Task> getAllTasks();
+    Map<Integer, Task> getAllTasks();
 
-    List<SubTask> getAllSubTasks();
+    Map<Integer, SubTask> getAllSubTasks();
 
-    List<Epic> getAllEpics();
+    Map<Integer, Epic> getAllEpics();
 
     void addTask(Task task);
 
@@ -33,7 +33,7 @@ public interface TaskManager {
 
     void updateEpic(Epic epic);
 
-    String subTasksInEpicToString(Epic epic);
+    List<SubTask> getSubTasksInEpic(int epicId);
 
     void deleteTask(Integer id);
 
@@ -44,5 +44,11 @@ public interface TaskManager {
     void deleteAllTasks();
 
     List<Task> getHistory();
+
+    List<Task> getAllTasksList();
+
+    List<SubTask> getAllSubTasksList();
+
+    List<Epic> getAllEpicsList();
 
 }

@@ -3,19 +3,25 @@ package tasks;
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private Epic epic;
 
-    public SubTask(String name, String description, TaskStatus status, Epic epic) { // Конструктор для создания подзадачи
+    private int epicId;
+
+    public SubTask(String name, String description, TaskStatus status, int epicId) { // Конструктор для создания подзадачи
         super(name, description, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+        return epicId;
     }
 
-    public void setEpic(Epic epic) {
-        this.epic = epic;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     @Override
@@ -52,6 +58,6 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "Подзадача{" + "Название подзадачи='" + super.getName() + '\'' + ", Описание подзадачи='" + super.getDescription() + '\'' + ", Статус подзадачи=" + super.getStatus() + ", ID подзадачи=" + super.getId() + ", Входит в эпик='" + epic.getName() + '\'' + '}';
+        return "Подзадача{" + "Название подзадачи='" + super.getName() + '\'' + ", Описание подзадачи='" + super.getDescription() + '\'' + ", Статус подзадачи='" + super.getStatus() + '\'' + ", ID подзадачи='" + super.getId() + '\'' + ", Входит в эпик='" + getEpicId() + '\'' + '}';
     }
 }

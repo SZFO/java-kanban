@@ -1,0 +1,9 @@
+id,type,name,status,description, epic
+1,TASK,Задача №1,NEW,Создать контроллер домена Active Directory
+2,TASK,Задача №2,NEW,Назначить статический IP-адрес серверу с AD
+3,EPIC,Эпик №1,IN_PROGRESS,Настроить VPN на маршрутизаторе
+4,SUBTASK,Подзадача №1,DONE,Произвести конфигурирование WireGuard подключения,3
+5,SUBTASK,Подзадача №2,NEW,Настроить статическую маршрутизацию,3
+
+
+5,1,3
