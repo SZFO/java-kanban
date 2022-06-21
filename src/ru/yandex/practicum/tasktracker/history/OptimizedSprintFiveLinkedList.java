@@ -1,6 +1,6 @@
-package managers.history;
+package ru.yandex.practicum.tasktracker.history;
 
-import tasks.Task;
+import ru.yandex.practicum.tasktracker.tasks.Task;
 
 import java.util.*;
 
@@ -41,7 +41,6 @@ public class OptimizedSprintFiveLinkedList<T> {
         return tasksHistory;
     }
 
-
     public void remove(int id) {
         if (nodeTaskHistory.containsKey(id)) {
             removeNode(nodeTaskHistory.get(id));
@@ -75,5 +74,4 @@ public class OptimizedSprintFiveLinkedList<T> {
     public boolean isEmpty() {
         return size == 0;
     }
-
 }

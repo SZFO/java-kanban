@@ -1,13 +1,19 @@
-package tasks;
+package ru.yandex.practicum.tasktracker.tasks;
 
 import java.util.Objects;
 
 public class SubTask extends Task {
+    private Integer id;
+    private Integer epicId;
 
-    private int epicId;
-
-    public SubTask(String name, String description, TaskStatus status, int epicId) { // Конструктор для создания подзадачи
+    public SubTask(String name, String description, TaskStatus status, Integer epicId) {
         super(name, description, status);
+        this.epicId = epicId;
+    }
+
+    public SubTask(Integer id, String name, String description, TaskStatus status, Integer epicId) {
+        super(name, description, status);
+        this.id = id;
         this.epicId = epicId;
     }
 

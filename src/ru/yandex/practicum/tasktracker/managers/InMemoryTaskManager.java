@@ -1,16 +1,13 @@
-package managers.memory;
+package ru.yandex.practicum.tasktracker.managers;
 
-import managers.Managers;
-import managers.history.HistoryManager;
-import tasks.Epic;
-import tasks.SubTask;
-import tasks.Task;
+import ru.yandex.practicum.tasktracker.history.HistoryManager;
+import ru.yandex.practicum.tasktracker.tasks.Epic;
+import ru.yandex.practicum.tasktracker.tasks.SubTask;
+import ru.yandex.practicum.tasktracker.tasks.Task;
 
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-
-
     private Integer id;
     private Map<Integer, Task> tasks;
     private Map<Integer, SubTask> subTasks;
@@ -125,8 +122,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getSubTasksInEpic(int epicId) {
-        if (!epics.containsKey(epicId))
+        if (!epics.containsKey(epicId)) {
             return Collections.emptyList();
+        }
         Epic epic = epics.get(epicId);
         return epic.getSubTasks();
     }
@@ -139,16 +137,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubTask(Integer id) {
-        if (!subTasks.containsKey(id))
+        if (!subTasks.containsKey(id)) {
             return;
+        }
         subTasks.remove(id);
         historyManager.remove(id);
     }
 
     @Override
     public void deleteEpic(Integer id) {
-        if (!epics.containsKey(id))
+        if (!epics.containsKey(id)) {
             return;
+        }
         for (SubTask subtask : epics.get(id).getSubTasks()) {
             subTasks.remove(subtask.getId());
             historyManager.remove(subtask.getId());
@@ -211,5 +211,4 @@ public class InMemoryTaskManager implements TaskManager {
     private Integer generateId() {
         return id++;
     }
-
 }

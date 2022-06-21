@@ -1,32 +1,35 @@
-package managers.memory;
+package ru.yandex.practicum.tasktracker.managers;
 
-import exceptions.ManagerSaveException;
-import managers.history.HistoryManager;
-import tasks.*;
+import ru.yandex.practicum.tasktracker.exceptions.ManagerSaveException;
+import ru.yandex.practicum.tasktracker.history.HistoryManager;
+import ru.yandex.practicum.tasktracker.tasks.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-
-    private static final String BACKED_TASKS_PATH = "src\\textfiles\\tasks.csv";
+    private static final String BACKED_TASKS_PATH = FileSystems
+            .getDefault()
+            .getPath("src/ru/yandex/practicum/tasktracker/resources/text-files/", "tasks.csv")
+            .toString();
     private static final String FILE_HEADER = "id,type,name,status,description,epic";
     private final File file;
 
-
     public static void main(String[] args) {
-        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File(BACKED_TASKS_PATH));
+        FileBackedTasksManager fileBackedManager = FileBackedTasksManager.loadFromFile(new File(BACKED_TASKS_PATH));
 
         Epic epic2 = new Epic("Эпик №2", "Провести апгрейд сервера");
-        fileBackedTasksManager.addEpic(epic2);
-        fileBackedTasksManager.getEpic(epic2.getId());
-        SubTask subtask3 = new SubTask("Подзадача №1", "Установить дополнительную оперативную память", TaskStatus.DONE, epic2.getId());
-        fileBackedTasksManager.addSubTask(subtask3);
-        fileBackedTasksManager.getSubTask(subtask3.getId());
+        fileBackedManager.addEpic(epic2);
+        fileBackedManager.getEpic(epic2.getId());
+        String subtaskThreeDescription = "Установить дополнительную оперативную память";
+        SubTask subtask3 = new SubTask("Подзадача №1", subtaskThreeDescription, TaskStatus.DONE, epic2.getId());
+        fileBackedManager.addSubTask(subtask3);
+        fileBackedManager.getSubTask(subtask3.getId());
     }
-
 
     public FileBackedTasksManager(File file) {
         this.file = file;
@@ -43,7 +46,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         for (SubTask subTask : getAllSubTasksList()) {
             tasks.put(subTask.getId(), subTaskToString(subTask));
         }
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             bw.write(FILE_HEADER);
             bw.newLine();
             for (String task : tasks.values()) {
@@ -52,11 +55,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             bw.newLine();
             bw.write(toString(getHistoryManager()));
-        } catch (IOException exp) {
-            throw new ManagerSaveException("Ошибка сохранения в файл: " + file.getName());
+        } catch (IOException e) {
+            /* По ТЗ мы отлавливаем исключения вида IOException и кидаем
+             собственное непроверяемое исключение ManagerSaveException.
+               Поэтому, как мне кажется, по замечанию №4 было правильно же. Или всё-таки нет? */
+            throw new ManagerSaveException("Ошибка сохранения в файл." + file.getName());
         }
     }
-
 
     private static void addTask(FileBackedTasksManager manager, String str) {
         Task task = taskFromString(str);
@@ -78,24 +83,29 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private static List<String> readCsv() {
-        if (!Files.exists(Path.of(BACKED_TASKS_PATH)))
+        if (!Files.exists(Path.of(BACKED_TASKS_PATH))) {
             return Collections.emptyList();
+        }
         List<String> bufferList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(BACKED_TASKS_PATH))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(BACKED_TASKS_PATH, StandardCharsets.UTF_8))) {
             while (br.ready()) {
                 bufferList.add(br.readLine());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // А вот тут в замечании №7 исправил, действительно не бросил собственное исключение при IOException.
+            throw new ManagerSaveException("Ошибка чтения файла.");
         }
         return bufferList;
     }
 
-
     public static FileBackedTasksManager loadFromFile(File file) {
         List<String> tasks = FileBackedTasksManager.readCsv();
         FileBackedTasksManager fileBack = new FileBackedTasksManager(file);
-        for (int i = 1; i < tasks.size() - 1; i++) {
+        if (tasks.isEmpty()) {
+            System.out.println("Файл пуст.");
+            return fileBack;
+        }
+        for (int i = 1; i <= tasks.size() - 1; i++) {
             String str = tasks.get(i);
             if (str.isEmpty()) {
                 tasks.remove(str);
@@ -103,21 +113,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             addTask(fileBack, str);
         }
-
-        if (!tasks.isEmpty()) {
-            try {
-                String[] temp = tasks.get(tasks.size() - 1).split(",");
-                for (String s : temp) {
-                    int element = Integer.parseInt(s);
-                    fileBack.getHistoryManager().add(fileBack.getTaskUniversal(element));
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("История просмотров пуста");
+        String lastElement = tasks.get(tasks.size() - 1);
+        // Проверка на наличие истории просмотров в файле.
+        if (lastElement.length() > (tasks.size() - 1) * 2) {
+            System.out.println("История прошлых просмотров пуста. Задачи считаны.");
+            return fileBack;
+        } else {
+            String[] temp = lastElement.split(",");
+            for (String s : temp) {
+                int element = Integer.parseInt(s);
+                fileBack.getHistoryManager().add(fileBack.getTaskUniversal(element));
             }
+            return fileBack;
         }
-        return fileBack;
     }
-
 
     private static Task taskFromString(String value) {
         String[] elements = value.split(",");
@@ -139,6 +148,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static Task getTaskFromString(String[] elements) {
         return new Task(
+                Integer.parseInt(elements[0]),
                 elements[2],
                 elements[4],
                 TaskStatus.valueOf(elements[3]));
@@ -146,12 +156,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static Task getEpicFromString(String[] elements) {
         return new Epic(
+                Integer.parseInt(elements[0]),
                 elements[2],
                 elements[4]);
     }
 
     private static Task getSubTaskFromString(String[] elements) {
         return new SubTask(
+                Integer.parseInt(elements[0]),
                 elements[2],
                 elements[4],
                 TaskStatus.valueOf(elements[3]),
@@ -247,7 +259,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-
     public String taskToString(Task task) {
         return task.getId() + "," +
                 TaskType.TASK + "," +
@@ -272,13 +283,4 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 subTask.getDescription() + "," +
                 subTask.getEpicId();
     }
-
 }
-
-
-
-
-
-
-
-

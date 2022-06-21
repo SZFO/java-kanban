@@ -1,4 +1,4 @@
-package managers.history;
+package ru.yandex.practicum.tasktracker.history;
 
 public class Node<E> {
     E data;
@@ -34,5 +34,4 @@ public class Node<E> {
     public void setPrev(Node<E> prev) {
         this.prev = prev;
     }
-
 }

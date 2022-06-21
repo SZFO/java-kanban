@@ -1,13 +1,19 @@
-package tasks;
+package ru.yandex.practicum.tasktracker.tasks;
 
 import java.util.*;
 
 public class Epic extends Task {
-
+    private Integer id;
     private List<SubTask> subTasks;
 
     public Epic(String name, String description) {
         super(name, description);
+        this.subTasks = new ArrayList<>();
+    }
+
+    public Epic(Integer id, String name, String description) {
+        super(name, description);
+        this.id = id;
         this.subTasks = new ArrayList<>();
     }
 

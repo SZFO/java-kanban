@@ -1,8 +1,13 @@
-import managers.Managers;
-import managers.memory.TaskManager;
-import tasks.*;
+package ru.yandex.practicum.tasktracker;
 
 import java.io.PrintWriter;
+
+import ru.yandex.practicum.tasktracker.managers.Managers;
+import ru.yandex.practicum.tasktracker.managers.TaskManager;
+import ru.yandex.practicum.tasktracker.tasks.Epic;
+import ru.yandex.practicum.tasktracker.tasks.SubTask;
+import ru.yandex.practicum.tasktracker.tasks.Task;
+import ru.yandex.practicum.tasktracker.tasks.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,11 +35,14 @@ public class Main {
         Epic epic2 = new Epic("Эпик №2", "Пустой эпик");
         taskManager.addEpic(epic2);
 
-        SubTask subTask1 = new SubTask("Подзадача №1", "Вставить ключ в замок зажигания", TaskStatus.NEW, 3);
+        String subtaskOneDescription = "Вставить ключ в замок зажигания";
+        SubTask subTask1 = new SubTask("Подзадача №1", subtaskOneDescription, TaskStatus.NEW, 3);
         taskManager.addSubTask(subTask1);
-        SubTask subTask2 = new SubTask("Подзадача №2", "Установить коробку передач на нейтраль", TaskStatus.NEW, 3);
+        String subtaskTwoDescription = "Установить коробку передач на нейтраль";
+        SubTask subTask2 = new SubTask("Подзадача №2", subtaskTwoDescription, TaskStatus.NEW, 3);
         taskManager.addSubTask(subTask2);
-        SubTask subTask3 = new SubTask("Подзадача №3", "Повернуть ключ в замке зажигания", TaskStatus.NEW, 3);
+        String subtaskThreeDescription = "Повернуть ключ в замке зажигания";
+        SubTask subTask3 = new SubTask("Подзадача №3", subtaskThreeDescription, TaskStatus.NEW, 3);
         taskManager.addSubTask(subTask3);
 
         pw.println();

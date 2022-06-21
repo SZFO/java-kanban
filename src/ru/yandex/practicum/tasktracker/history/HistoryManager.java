@@ -1,11 +1,10 @@
-package managers.history;
+package ru.yandex.practicum.tasktracker.history;
 
-import tasks.Task;
+import ru.yandex.practicum.tasktracker.tasks.Task;
 
 import java.util.List;
 
 public interface HistoryManager {
-
     void add(Task task);
 
     void remove(int id);
