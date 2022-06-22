@@ -1,9 +1,9 @@
-package ru.yandex.practicum.tasktracker.managers;
+package ru.yandex.practicum.task_tracker.managers;
 
-import ru.yandex.practicum.tasktracker.history.HistoryManager;
-import ru.yandex.practicum.tasktracker.tasks.Epic;
-import ru.yandex.practicum.tasktracker.tasks.SubTask;
-import ru.yandex.practicum.tasktracker.tasks.Task;
+import ru.yandex.practicum.task_tracker.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.tasks.Epic;
+import ru.yandex.practicum.task_tracker.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.tasks.Task;
 
 import java.util.*;
 
@@ -20,21 +20,6 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
-    }
-
-    @Override
-    public Map<Integer, Task> getAllTasks() {
-        return tasks;
-    }
-
-    @Override
-    public Map<Integer, SubTask> getAllSubTasks() {
-        return subTasks;
-    }
-
-    @Override
-    public Map<Integer, Epic> getAllEpics() {
-        return epics;
     }
 
     @Override
@@ -55,8 +40,8 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setEpicId(subTask.getEpicId());
         subTasks.put(num, subTask);
         subTask.setId(num);
-        getAllEpics().get(subTask.getEpicId()).addSubTasks(subTask);
-        getAllEpics().get(subTask.getEpicId()).calculateEpicStatus();
+        epics.get(subTask.getEpicId()).addSubTasks(subTask);
+        epics.get(subTask.getEpicId()).calculateEpicStatus();
     }
 
     @Override
@@ -176,15 +161,15 @@ public class InMemoryTaskManager implements TaskManager {
         return newSubTask;
     }
 
-    public List<Task> getAllTasksList() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
-    public List<SubTask> getAllSubTasksList() {
+    public List<SubTask> getAllSubTasks() {
         return new ArrayList<>(subTasks.values());
     }
 
-    public List<Epic> getAllEpicsList() {
+    public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 

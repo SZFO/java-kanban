@@ -1,4 +1,7 @@
-package ru.yandex.practicum.tasktracker.tasks;
+package ru.yandex.practicum.task_tracker.tasks;
+
+import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
 
 import java.util.Objects;
 
@@ -11,7 +14,7 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = TaskStatus.NEW;
+        this.status = NEW;
     }
 
     public Task(String name, String description, TaskStatus status) {
@@ -36,7 +39,7 @@ public class Task {
     }
 
     public TaskType getType() {
-        return TaskType.TASK;
+        return TASK;
     }
 
     public TaskStatus getStatus() {
@@ -85,13 +88,17 @@ public class Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task task = (Task) obj;
-        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(status, task.status);
+        return Objects.equals(id, task.id) &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(status, task.status);
     }
 
     @Override
     public String toString() {
-        return "Задача{" + "Название задачи='" + name + '\'' + ", Описание задачи='" + description + '\'' + ", Статус задачи='" + status + '\'' + ", ID задачи='" + id + '\'' + '}';
+        return "Задача{" + "Название задачи = '" + name + '\'' +
+                ", Описание задачи = '" + description + '\'' +
+                ", Статус задачи = '" + status + '\'' +
+                ", ID задачи = '" + id + '\'' + '}';
     }
-
-
 }

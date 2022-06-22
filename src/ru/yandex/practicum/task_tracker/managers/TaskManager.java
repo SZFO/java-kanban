@@ -1,19 +1,12 @@
-package ru.yandex.practicum.tasktracker.managers;
+package ru.yandex.practicum.task_tracker.managers;
 
-import ru.yandex.practicum.tasktracker.tasks.Epic;
-import ru.yandex.practicum.tasktracker.tasks.SubTask;
-import ru.yandex.practicum.tasktracker.tasks.Task;
+import ru.yandex.practicum.task_tracker.tasks.Epic;
+import ru.yandex.practicum.task_tracker.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.tasks.Task;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TaskManager {
-    Map<Integer, Task> getAllTasks();
-
-    Map<Integer, SubTask> getAllSubTasks();
-
-    Map<Integer, Epic> getAllEpics();
-
     void addTask(Task task);
 
     void addEpic(Epic epic);
@@ -44,9 +37,9 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    List<Task> getAllTasksList();
+    List<Task> getAllTasks();
 
-    List<SubTask> getAllSubTasksList();
+    List<SubTask> getAllSubTasks();
 
-    List<Epic> getAllEpicsList();
+    List<Epic> getAllEpics();
 }

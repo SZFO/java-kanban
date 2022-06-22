@@ -1,4 +1,7 @@
-package ru.yandex.practicum.tasktracker.tasks;
+package ru.yandex.practicum.task_tracker.tasks;
+
+import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
 
 import java.util.*;
 
@@ -31,7 +34,7 @@ public class Epic extends Task {
 
     @Override
     public TaskType getType() {
-        return TaskType.EPIC;
+        return EPIC;
     }
 
     @Override
@@ -63,34 +66,40 @@ public class Epic extends Task {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Epic epic = (Epic) obj;
-        return Objects.equals(super.getId(), epic.getId()) && Objects.equals(super.getName(), epic.getName()) && Objects.equals(super.getDescription(), epic.getDescription()) && Objects.equals(super.getStatus(), epic.getStatus());
+        return Objects.equals(super.getId(), epic.getId()) &&
+                Objects.equals(super.getName(), epic.getName()) &&
+                Objects.equals(super.getDescription(), epic.getDescription()) &&
+                Objects.equals(super.getStatus(), epic.getStatus());
     }
 
     @Override
     public String toString() {
-        return "Эпик{" + "Название эпика='" + super.getName() + '\'' + ", Описание эпика='" + super.getDescription() + '\'' + ", Статус эпика='" + super.getStatus() + '\'' + ", ID эпика='" + super.getId() + '\'' + '}';
+        return "Эпик{" + "Название эпика = '" + super.getName() + '\'' +
+                ", Описание эпика = '" + super.getDescription() + '\'' +
+                ", Статус эпика = '" + super.getStatus() + '\'' +
+                ", ID эпика = '" + super.getId() + '\'' + '}';
     }
 
     public void calculateEpicStatus() {
         int amountStatusNew = 0;
         int amountStatusDone = 0;
         for (SubTask subTask : getSubTasks()) {
-            if (subTask.getStatus().equals(TaskStatus.IN_PROGRESS)) {
-                setStatus(TaskStatus.IN_PROGRESS);
+            if (subTask.getStatus().equals(IN_PROGRESS)) {
+                setStatus(IN_PROGRESS);
             }
-            if (subTask.getStatus().equals(TaskStatus.DONE)) {
+            if (subTask.getStatus().equals(DONE)) {
                 amountStatusDone++;
             }
-            if (subTask.getStatus().equals(TaskStatus.NEW)) {
+            if (subTask.getStatus().equals(NEW)) {
                 amountStatusNew++;
             }
         }
         if (amountStatusDone == getSubTasks().size() && !getSubTasks().isEmpty()) {
-            setStatus(TaskStatus.DONE);
+            setStatus(DONE);
         } else if (amountStatusDone > 0 && amountStatusDone < getSubTasks().size()) {
-            setStatus(TaskStatus.IN_PROGRESS);
+            setStatus(IN_PROGRESS);
         } else if (getSubTasks().isEmpty() || amountStatusNew == getSubTasks().size()) {
-            setStatus(TaskStatus.NEW);
+            setStatus(NEW);
         }
     }
 }

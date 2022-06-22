@@ -1,6 +1,6 @@
-package ru.yandex.practicum.tasktracker.history;
+package ru.yandex.practicum.task_tracker.history;
 
-import ru.yandex.practicum.tasktracker.tasks.Task;
+import ru.yandex.practicum.task_tracker.tasks.Task;
 
 import java.util.List;
 

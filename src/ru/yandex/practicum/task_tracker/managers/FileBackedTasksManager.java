@@ -1,21 +1,19 @@
-package ru.yandex.practicum.tasktracker.managers;
+package ru.yandex.practicum.task_tracker.managers;
 
-import ru.yandex.practicum.tasktracker.exceptions.ManagerSaveException;
-import ru.yandex.practicum.tasktracker.history.HistoryManager;
-import ru.yandex.practicum.tasktracker.tasks.*;
+import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
+
+import ru.yandex.practicum.task_tracker.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.tasks.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private static final String BACKED_TASKS_PATH = FileSystems
-            .getDefault()
-            .getPath("src/ru/yandex/practicum/tasktracker/resources/text-files/", "tasks.csv")
-            .toString();
+    private static final String BACKED_TASKS_PATH = "resources/text-files/tasks.csv";
     private static final String FILE_HEADER = "id,type,name,status,description,epic";
     private final File file;
 
@@ -26,7 +24,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBackedManager.addEpic(epic2);
         fileBackedManager.getEpic(epic2.getId());
         String subtaskThreeDescription = "Установить дополнительную оперативную память";
-        SubTask subtask3 = new SubTask("Подзадача №1", subtaskThreeDescription, TaskStatus.DONE, epic2.getId());
+        SubTask subtask3 = new SubTask("Подзадача №1", subtaskThreeDescription, DONE, epic2.getId());
         fileBackedManager.addSubTask(subtask3);
         fileBackedManager.getSubTask(subtask3.getId());
     }
@@ -36,14 +34,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        Map<Integer, String> tasks = new LinkedHashMap<>();
-        for (Task task : getAllTasksList()) {
+        Map<Integer, String> tasks = new HashMap<>();
+        for (Task task : getAllTasks()) {
             tasks.put(task.getId(), taskToString(task));
         }
-        for (Epic epic : getAllEpicsList()) {
+        for (Epic epic : getAllEpics()) {
             tasks.put(epic.getId(), epicToString(epic));
         }
-        for (SubTask subTask : getAllSubTasksList()) {
+        for (SubTask subTask : getAllSubTasks()) {
             tasks.put(subTask.getId(), subTaskToString(subTask));
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
@@ -56,9 +54,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             bw.newLine();
             bw.write(toString(getHistoryManager()));
         } catch (IOException e) {
-            /* По ТЗ мы отлавливаем исключения вида IOException и кидаем
-             собственное непроверяемое исключение ManagerSaveException.
-               Поэтому, как мне кажется, по замечанию №4 было правильно же. Или всё-таки нет? */
             throw new ManagerSaveException("Ошибка сохранения в файл." + file.getName());
         }
     }
@@ -92,7 +87,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 bufferList.add(br.readLine());
             }
         } catch (IOException e) {
-            // А вот тут в замечании №7 исправил, действительно не бросил собственное исключение при IOException.
             throw new ManagerSaveException("Ошибка чтения файла.");
         }
         return bufferList;
@@ -120,8 +114,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             return fileBack;
         } else {
             String[] temp = lastElement.split(",");
-            for (String s : temp) {
-                int element = Integer.parseInt(s);
+            for (int counter = temp.length - 1; counter >= 0; counter--) {
+                int element = Integer.parseInt(temp[counter]);
                 fileBack.getHistoryManager().add(fileBack.getTaskUniversal(element));
             }
             return fileBack;
