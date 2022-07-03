@@ -3,21 +3,30 @@ package ru.yandex.practicum.task_tracker.tasks;
 import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
 import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Epic extends Task {
     private Integer id;
     private List<SubTask> subTasks;
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);
         this.subTasks = new ArrayList<>();
+        this.endTime = getEndTime();
     }
 
     public Epic(Integer id, String name, String description) {
         super(name, description);
         this.id = id;
         this.subTasks = new ArrayList<>();
+        this.endTime = getEndTime();
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public List<SubTask> getSubTasks() {
@@ -74,10 +83,13 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Эпик{" + "Название эпика = '" + super.getName() + '\'' +
-                ", Описание эпика = '" + super.getDescription() + '\'' +
-                ", Статус эпика = '" + super.getStatus() + '\'' +
-                ", ID эпика = '" + super.getId() + '\'' + '}';
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," +
+                (Optional.ofNullable(getStartTime()).isPresent() ?
+                        getStartTime().format(dateTimeFormatter) : "Not set") + "," +
+                (Optional.ofNullable(getDuration()).isPresent() ?
+                        getDuration() : "Not set") + "," +
+                (Optional.ofNullable(getEndTime()).isPresent() ?
+                        getEndTime().format(dateTimeFormatter) : "Missing");
     }
 
     public void calculateEpicStatus() {
@@ -101,5 +113,53 @@ public class Epic extends Task {
         } else if (getSubTasks().isEmpty() || amountStatusNew == getSubTasks().size()) {
             setStatus(NEW);
         }
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        if (subTasks.isEmpty()) {
+            return null;
+        }
+        LocalDateTime startTime = LocalDateTime.MAX;
+        for (SubTask subTask : subTasks) {
+            if (subTask.getStartTime() == null) {
+                continue;
+            }
+            if (subTask.getStartTime() != null && startTime.isAfter(subTask.getStartTime())) {
+                startTime = subTask.getStartTime();
+            }
+        }
+        return startTime;
+    }
+
+    @Override
+    public Duration getDuration() {
+        if (subTasks.isEmpty()) {
+            return null;
+        }
+        Duration duration = Duration.ZERO;
+        for (SubTask subTask : subTasks) {
+            if (subTask.getDuration() != null) {
+                duration = duration.plus(subTask.getDuration());
+            }
+        }
+        return duration;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if (subTasks.isEmpty()) {
+            return null;
+        }
+        LocalDateTime temp = LocalDateTime.MIN;
+        for (SubTask subTask : subTasks) {
+            if (subTask.getEndTime() == null) {
+                continue;
+            }
+            if (subTask.getEndTime() != null && temp.isBefore(subTask.getEndTime())) {
+                temp = subTask.getEndTime();
+            }
+        }
+        return temp;
     }
 }

@@ -5,6 +5,7 @@ import ru.yandex.practicum.task_tracker.tasks.SubTask;
 import ru.yandex.practicum.task_tracker.tasks.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     void addTask(Task task);
@@ -42,4 +43,7 @@ public interface TaskManager {
     List<SubTask> getAllSubTasks();
 
     List<Epic> getAllEpics();
+
+    Set<Task> getPrioritizedTasks();
+
 }

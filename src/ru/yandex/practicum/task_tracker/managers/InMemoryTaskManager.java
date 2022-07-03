@@ -1,11 +1,14 @@
 package ru.yandex.practicum.task_tracker.managers;
 
+import ru.yandex.practicum.task_tracker.exceptions.ManagerSaveException;
 import ru.yandex.practicum.task_tracker.history.HistoryManager;
 import ru.yandex.practicum.task_tracker.tasks.Epic;
 import ru.yandex.practicum.task_tracker.tasks.SubTask;
 import ru.yandex.practicum.task_tracker.tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer id;
@@ -13,6 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTasks;
     private Map<Integer, Epic> epics;
     private HistoryManager historyManager;
+    private Set<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
         this.id = 1;
@@ -20,12 +24,28 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
+
+        Comparator<Task> taskComparator = (o1, o2) -> {
+            if (o1.getStartTime() == null && o2.getStartTime() == null) {
+                return 0;
+            } else if (o1.getStartTime() == null) {
+                return 1;
+            } else if (o2.getStartTime() == null) {
+                return -1;
+            } else
+                return o1.getStartTime().compareTo(o2.getStartTime());
+        };
+        prioritizedTasks = new TreeSet<>(taskComparator);
     }
 
     @Override
     public void addTask(Task task) {
+        if (!notIntersections.test(task)) {
+            throw new ManagerSaveException("При создании задачи обнаружено пересечение по времени выполнения.");
+        }
         task.setId(generateId());
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
     }
 
     @Override
@@ -36,12 +56,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubTask(SubTask subTask) {
+        if (!notIntersections.test(subTask)) {
+            throw new ManagerSaveException("При создании подзадачи обнаружено пересечение по времени выполнения.");
+        }
         int num = generateId();
         subTask.setEpicId(subTask.getEpicId());
         subTasks.put(num, subTask);
         subTask.setId(num);
         epics.get(subTask.getEpicId()).addSubTasks(subTask);
         epics.get(subTask.getEpicId()).calculateEpicStatus();
+        prioritizedTasks.add(subTask);
     }
 
     @Override
@@ -70,16 +94,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        if (!notIntersections.test(task)) {
+            throw new ManagerSaveException("При обновлении задачи обнаружено пересечение по времени выполнения.");
+        }
         for (Task elem : tasks.values()) {
             if (task.getName().equals(elem.getName())) {
+                prioritizedTasks.remove(elem);
                 task.setId(elem.getId());
                 tasks.put(task.getId(), task);
+                prioritizedTasks.add(task);
             }
         }
     }
 
     @Override
     public void updateSubTask(SubTask newSubTask) {
+        if (!notIntersections.test(newSubTask)) {
+            throw new ManagerSaveException("При обновлении подзадачи обнаружено пересечение по времени выполнения.");
+        }
         for (SubTask elem : subTasks.values()) {
             if (newSubTask.getName().equals(elem.getName())) {
                 newSubTask.setId(elem.getId());
@@ -87,9 +119,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
         SubTask oldSubTask = cloneSubTask(subTasks.get(newSubTask.getId()));
         Epic epic = epics.get(oldSubTask.getEpicId());
+        prioritizedTasks.remove(oldSubTask);
         subTasks.remove(oldSubTask.getId());
 
         subTasks.put(newSubTask.getId(), newSubTask);
+        prioritizedTasks.add(newSubTask);
         if (epic.getSubTasks().contains(oldSubTask)) {
             epic.getSubTasks().remove(oldSubTask);
             epic.getSubTasks().add(newSubTask);
@@ -99,9 +133,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        if (epics.containsKey(epic.getId())) {
-            epics.put(epic.getId(), epic);
-            epic.calculateEpicStatus();
+        for (Epic elem : epics.values()) {
+            if (epic.getName().equals(elem.getName())) {
+                epic.setId(elem.getId());
+                epics.put(epic.getId(), epic);
+                epic.calculateEpicStatus();
+            }
         }
     }
 
@@ -116,6 +153,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
+        if (!tasks.containsKey(id)) {
+            throw new ManagerSaveException("Задача с указанным Id отсутствует");
+        }
         tasks.remove(id);
         historyManager.remove(id);
     }
@@ -123,16 +163,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTask(Integer id) {
         if (!subTasks.containsKey(id)) {
-            return;
+            throw new ManagerSaveException("Подзадача с указанным Id отсутствует");
         }
+        SubTask oldSubTask = cloneSubTask(subTasks.get(id));
+        Epic epic = epics.get(oldSubTask.getEpicId());
         subTasks.remove(id);
         historyManager.remove(id);
+        epic.getSubTasks().remove(oldSubTask);
+        epic.calculateEpicStatus();
     }
 
     @Override
     public void deleteEpic(Integer id) {
         if (!epics.containsKey(id)) {
-            return;
+            throw new ManagerSaveException("Эпик с указанным Id отсутствует");
         }
         for (SubTask subtask : epics.get(id).getSubTasks()) {
             subTasks.remove(subtask.getId());
@@ -144,6 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        prioritizedTasks.clear();
         tasks.clear();
         subTasks.clear();
         epics.clear();
@@ -155,7 +200,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public SubTask cloneSubTask(SubTask subTask) {
-        SubTask newSubTask = new SubTask(subTask.getName(), subTask.getDescription(), subTask.getStatus(), subTask.getEpicId());
+        SubTask newSubTask = new SubTask(subTask.getName(), subTask.getDescription(), subTask.getStatus(),
+                subTask.getEpicId(), subTask.getStartTime(), subTask.getDuration());
         newSubTask.setId(subTask.getId());
         newSubTask.setStatus(subTask.getStatus());
         return newSubTask;
@@ -171,6 +217,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
+    }
+
+    public Set<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
     }
 
     public Integer getId() {
@@ -196,4 +246,29 @@ public class InMemoryTaskManager implements TaskManager {
     private Integer generateId() {
         return id++;
     }
+
+    private final Predicate<Task> notIntersections = newTask -> {
+        if (newTask.getStartTime() == null) {
+            return true;
+        }
+        LocalDateTime newTaskStart = newTask.getStartTime();
+        LocalDateTime newTaskFinish = newTask.getEndTime();
+        for (Task task : prioritizedTasks) {
+            LocalDateTime taskStart = task.getStartTime();
+            LocalDateTime taskFinish = task.getEndTime();
+            if (taskStart == null) {
+                continue;
+            }
+            if (newTaskStart.isBefore(taskStart) && newTaskFinish.isAfter(taskStart)) {
+                return false;
+            }
+            if (newTaskStart.isBefore(taskFinish) && newTaskFinish.isAfter(taskFinish)) {
+                return false;
+            }
+            if (newTaskStart.isEqual(taskStart) && newTaskFinish.isBefore(taskFinish)) {
+                return false;
+            }
+        }
+        return true;
+    };
 }

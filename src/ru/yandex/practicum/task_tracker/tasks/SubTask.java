@@ -2,19 +2,24 @@ package ru.yandex.practicum.task_tracker.tasks;
 
 import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SubTask extends Task {
     private Integer id;
     private Integer epicId;
 
-    public SubTask(String name, String description, TaskStatus status, Integer epicId) {
-        super(name, description, status);
+    public SubTask(String name, String description, TaskStatus status, Integer epicId,
+                   LocalDateTime startTime, Duration duration) {
+        super(name, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
-    public SubTask(Integer id, String name, String description, TaskStatus status, Integer epicId) {
-        super(name, description, status);
+    public SubTask(Integer id, String name, String description, TaskStatus status,
+                   Integer epicId, LocalDateTime startTime, Duration duration) {
+        super(id, name, description, status, startTime, duration);
         this.id = id;
         this.epicId = epicId;
     }
@@ -69,10 +74,12 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "Подзадача{" + "Название подзадачи = '" + super.getName() +
-                '\'' + ", Описание подзадачи = '" + super.getDescription() +
-                '\'' + ", Статус подзадачи = '" + super.getStatus() + '\'' +
-                ", ID подзадачи = '" + super.getId() + '\'' +
-                ", Входит в эпик с ID = '" + getEpicId() + '\'' + '}';
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," +
+                getEpicId() + "," + (Optional.ofNullable(getStartTime()).isPresent() ?
+                getStartTime().format(dateTimeFormatter) : "Not set") + "," +
+                (Optional.ofNullable(getDuration()).isPresent() ?
+                        getDuration() : "Not set") + "," +
+                (Optional.ofNullable(getEndTime()).isPresent() ?
+                        getEndTime().format(dateTimeFormatter) : "Missing");
     }
 }

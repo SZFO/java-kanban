@@ -3,13 +3,20 @@ package ru.yandex.practicum.task_tracker.tasks;
 import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
 import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Task {
     private Integer id;
     private String name;
     private String description;
     private TaskStatus status;
+    private Duration duration;
+    private LocalDateTime startTime;
+    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
     public Task(String name, String description) {
         this.name = name;
@@ -23,11 +30,22 @@ public class Task {
         this.status = status;
     }
 
-    public Task(Integer id, String name, String description, TaskStatus status) {
+    public Task(String name, String description, TaskStatus status, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+    public Task(Integer id, String name, String description, TaskStatus status,
+                LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public Integer getId() {
@@ -58,6 +76,21 @@ public class Task {
         return description;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
     @Override
     public int hashCode() {
@@ -83,6 +116,13 @@ public class Task {
         return hash;
     }
 
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -96,9 +136,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Задача{" + "Название задачи = '" + name + '\'' +
-                ", Описание задачи = '" + description + '\'' +
-                ", Статус задачи = '" + status + '\'' +
-                ", ID задачи = '" + id + '\'' + '}';
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," +
+                (Optional.ofNullable(getStartTime()).isPresent() ?
+                        getStartTime().format(dateTimeFormatter) : "Not set") + "," +
+                (Optional.ofNullable(getDuration()).isPresent() ?
+                        getDuration() : "Not set") + "," +
+                (Optional.ofNullable(getEndTime()).isPresent() ?
+                        getEndTime().format(dateTimeFormatter) : "Missing");
     }
 }
