@@ -1,7 +1,7 @@
-package ru.yandex.practicum.task_tracker.tasks;
+package ru.yandex.practicum.task_tracker.main.tasks;
 
-import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
-import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
+import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.tasks.TaskType.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -85,11 +85,11 @@ public class Epic extends Task {
     public String toString() {
         return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," +
                 (Optional.ofNullable(getStartTime()).isPresent() ?
-                        getStartTime().format(dateTimeFormatter) : "Not set") + "," +
+                        getStartTime().format(DateTimeFormat.getDateTimeFormatter()) : "Not set") + "," +
                 (Optional.ofNullable(getDuration()).isPresent() ?
                         getDuration() : "Not set") + "," +
                 (Optional.ofNullable(getEndTime()).isPresent() ?
-                        getEndTime().format(dateTimeFormatter) : "Missing");
+                        getEndTime().format(DateTimeFormat.getDateTimeFormatter()) : "Missing");
     }
 
     public void calculateEpicStatus() {

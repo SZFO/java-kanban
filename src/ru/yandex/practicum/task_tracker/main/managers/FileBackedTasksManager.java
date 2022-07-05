@@ -1,10 +1,10 @@
-package ru.yandex.practicum.task_tracker.managers;
+package ru.yandex.practicum.task_tracker.main.managers;
 
-import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
 
-import ru.yandex.practicum.task_tracker.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.tasks.*;
+import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.tasks.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -153,7 +153,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 elements[2],
                 elements[4],
                 valueOf(elements[3]),
-                LocalDateTime.parse(elements[5], Task.dateTimeFormatter),
+                LocalDateTime.parse(elements[5], DateTimeFormat.getDateTimeFormatter()),
                 Duration.parse(elements[6]));
     }
 
@@ -181,7 +181,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 elements[4],
                 valueOf(elements[3]),
                 Integer.parseInt(elements[5]),
-                LocalDateTime.parse(elements[6], Task.dateTimeFormatter),
+                LocalDateTime.parse(elements[6], DateTimeFormat.getDateTimeFormatter()),
                 Duration.parse(elements[7]));
     }
 

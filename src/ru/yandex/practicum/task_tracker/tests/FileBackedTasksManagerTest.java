@@ -1,10 +1,8 @@
-package ru.yandex.practicum.task_tracker.tests;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.task_tracker.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.managers.FileBackedTasksManager;
+import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.managers.FileBackedTasksManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
     private static final String BACKED_TASKS_TESTS_PATH = "resources/text-files/tasks1.csv";
-    private static final String ERROR_MESSAGE = "Ошибка чтения из файла во время теста.";
+    private static final String ERROR_MESSAGE = "РћС€РёР±РєР° С‡С‚РµРЅРёСЏ РёР· С„Р°Р№Р»Р° РІРѕ РІСЂРµРјСЏ С‚РµСЃС‚Р°.";
 
     @BeforeEach
     @Override
@@ -25,8 +23,8 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    void saveIfEmptyTasksListTest() {
-        // Если задачи не созданы, то в файл сохраняется шапка и пустая строка. Всё вместе имеет размер == 2.
+    public void saveIfEmptyTasksListTest() {
+        // Р•СЃР»Рё Р·Р°РґР°С‡Рё РЅРµ СЃРѕР·РґР°РЅС‹, С‚Рѕ РІ С„Р°Р№Р» СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ С€Р°РїРєР° Рё РїСѓСЃС‚Р°СЏ СЃС‚СЂРѕРєР°. Р’СЃС‘ РІРјРµСЃС‚Рµ РёРјРµРµС‚ СЂР°Р·РјРµСЂ == 2.
         manager.save();
         try {
             assertEquals(2, Files.readAllLines(Paths.get(BACKED_TASKS_TESTS_PATH)).size());
@@ -36,7 +34,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    void saveInEmptyHistoryListTest() {
+    public void saveInEmptyHistoryListTest() {
         manager.addEpic(epic1);
         manager.getEpic(epic1.getId());
         try {
@@ -47,7 +45,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    void saveEpicWithoutSubTasksTest() {
+    public void saveEpicWithoutSubTasksTest() {
         manager.addEpic(epic1);
         String testString;
         try {

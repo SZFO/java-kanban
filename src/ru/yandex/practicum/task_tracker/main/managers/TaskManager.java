@@ -1,8 +1,6 @@
-package ru.yandex.practicum.task_tracker.managers;
+package ru.yandex.practicum.task_tracker.main.managers;
 
-import ru.yandex.practicum.task_tracker.tasks.Epic;
-import ru.yandex.practicum.task_tracker.tasks.SubTask;
-import ru.yandex.practicum.task_tracker.tasks.Task;
+import ru.yandex.practicum.task_tracker.main.tasks.*;
 
 import java.util.List;
 import java.util.Set;

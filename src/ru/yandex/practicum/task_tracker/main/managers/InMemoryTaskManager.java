@@ -1,10 +1,8 @@
-package ru.yandex.practicum.task_tracker.managers;
+package ru.yandex.practicum.task_tracker.main.managers;
 
-import ru.yandex.practicum.task_tracker.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.tasks.Epic;
-import ru.yandex.practicum.task_tracker.tasks.SubTask;
-import ru.yandex.practicum.task_tracker.tasks.Task;
+import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.tasks.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,23 +22,13 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
-
-        Comparator<Task> taskComparator = (o1, o2) -> {
-            if (o1.getStartTime() == null && o2.getStartTime() == null) {
-                return 0;
-            } else if (o1.getStartTime() == null) {
-                return 1;
-            } else if (o2.getStartTime() == null) {
-                return -1;
-            } else
-                return o1.getStartTime().compareTo(o2.getStartTime());
-        };
-        prioritizedTasks = new TreeSet<>(taskComparator);
+        this.prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+                Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
     @Override
     public void addTask(Task task) {
-        if (!notIntersections.test(task)) {
+        if (intersectionsDetected.test(task)) {
             throw new ManagerSaveException("При создании задачи обнаружено пересечение по времени выполнения.");
         }
         task.setId(generateId());
@@ -56,7 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubTask(SubTask subTask) {
-        if (!notIntersections.test(subTask)) {
+        if (intersectionsDetected.test(subTask)) {
             throw new ManagerSaveException("При создании подзадачи обнаружено пересечение по времени выполнения.");
         }
         int num = generateId();
@@ -94,7 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (!notIntersections.test(task)) {
+        if (intersectionsDetected.test(task)) {
             throw new ManagerSaveException("При обновлении задачи обнаружено пересечение по времени выполнения.");
         }
         for (Task elem : tasks.values()) {
@@ -109,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask newSubTask) {
-        if (!notIntersections.test(newSubTask)) {
+        if (intersectionsDetected.test(newSubTask)) {
             throw new ManagerSaveException("При обновлении подзадачи обнаружено пересечение по времени выполнения.");
         }
         for (SubTask elem : subTasks.values()) {
@@ -247,9 +235,9 @@ public class InMemoryTaskManager implements TaskManager {
         return id++;
     }
 
-    private final Predicate<Task> notIntersections = newTask -> {
+    private final Predicate<Task> intersectionsDetected = newTask -> {
         if (newTask.getStartTime() == null) {
-            return true;
+            return false;
         }
         LocalDateTime newTaskStart = newTask.getStartTime();
         LocalDateTime newTaskFinish = newTask.getEndTime();
@@ -260,15 +248,15 @@ public class InMemoryTaskManager implements TaskManager {
                 continue;
             }
             if (newTaskStart.isBefore(taskStart) && newTaskFinish.isAfter(taskStart)) {
-                return false;
+                return true;
             }
             if (newTaskStart.isBefore(taskFinish) && newTaskFinish.isAfter(taskFinish)) {
-                return false;
+                return true;
             }
             if (newTaskStart.isEqual(taskStart) && newTaskFinish.isBefore(taskFinish)) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     };
 }

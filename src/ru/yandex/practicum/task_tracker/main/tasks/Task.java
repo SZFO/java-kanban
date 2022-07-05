@@ -1,11 +1,10 @@
-package ru.yandex.practicum.task_tracker.tasks;
+package ru.yandex.practicum.task_tracker.main.tasks;
 
-import static ru.yandex.practicum.task_tracker.tasks.TaskStatus.*;
-import static ru.yandex.practicum.task_tracker.tasks.TaskType.*;
+import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.tasks.TaskType.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ public class Task {
     private TaskStatus status;
     private Duration duration;
     private LocalDateTime startTime;
-    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
     public Task(String name, String description) {
         this.name = name;
@@ -138,10 +136,10 @@ public class Task {
     public String toString() {
         return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," +
                 (Optional.ofNullable(getStartTime()).isPresent() ?
-                        getStartTime().format(dateTimeFormatter) : "Not set") + "," +
+                        getStartTime().format(DateTimeFormat.getDateTimeFormatter()) : "Not set") + "," +
                 (Optional.ofNullable(getDuration()).isPresent() ?
                         getDuration() : "Not set") + "," +
                 (Optional.ofNullable(getEndTime()).isPresent() ?
-                        getEndTime().format(dateTimeFormatter) : "Missing");
+                        getEndTime().format(DateTimeFormat.getDateTimeFormatter()) : "Missing");
     }
 }
