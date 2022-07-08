@@ -1,14 +1,14 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.task_tracker.main.managers.InMemoryTaskManager;
-import ru.yandex.practicum.task_tracker.main.tasks.Epic;
-import ru.yandex.practicum.task_tracker.main.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.main.java.managers.InMemoryTaskManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Epic;
+import ru.yandex.practicum.task_tracker.main.java.tasks.SubTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.java.tasks.TaskStatus.*;
 
 public class EpicTest {
 

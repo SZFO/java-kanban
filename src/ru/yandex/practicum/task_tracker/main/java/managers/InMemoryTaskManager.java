@@ -1,8 +1,12 @@
-package ru.yandex.practicum.task_tracker.main.managers;
+package ru.yandex.practicum.task_tracker.main.java.managers;
 
-import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.main.tasks.*;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.TaskValidationException;
+import ru.yandex.practicum.task_tracker.main.java.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Epic;
+import ru.yandex.practicum.task_tracker.main.java.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Task;
+
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,6 +26,10 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
+        /* Изначально попробовал использовать предложенный компаратор Task::getStartTime, но он выводил задачи
+        без времени первыми, а не последними. Затем полез в оф. документацию интерфейса и на stackoverflow,
+        в итоге получилось, как по ТЗ.
+         */
         this.prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
                 Comparator.nullsLast(Comparator.naturalOrder())));
     }
@@ -29,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addTask(Task task) {
         if (intersectionsDetected.test(task)) {
-            throw new ManagerSaveException("При создании задачи обнаружено пересечение по времени выполнения.");
+            throw new TaskValidationException("При создании задачи обнаружено пересечение по времени выполнения.");
         }
         task.setId(generateId());
         tasks.put(task.getId(), task);
@@ -45,7 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubTask(SubTask subTask) {
         if (intersectionsDetected.test(subTask)) {
-            throw new ManagerSaveException("При создании подзадачи обнаружено пересечение по времени выполнения.");
+            throw new TaskValidationException("При создании подзадачи обнаружено пересечение по времени выполнения.");
         }
         int num = generateId();
         subTask.setEpicId(subTask.getEpicId());
@@ -83,7 +91,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (intersectionsDetected.test(task)) {
-            throw new ManagerSaveException("При обновлении задачи обнаружено пересечение по времени выполнения.");
+            throw new TaskValidationException("При обновлении задачи обнаружено пересечение по времени выполнения.");
         }
         for (Task elem : tasks.values()) {
             if (task.getName().equals(elem.getName())) {
@@ -98,7 +106,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubTask(SubTask newSubTask) {
         if (intersectionsDetected.test(newSubTask)) {
-            throw new ManagerSaveException("При обновлении подзадачи обнаружено пересечение по времени выполнения.");
+            throw new TaskValidationException("При обновлении подзадачи обнаружено пересечение по времени выполнения.");
         }
         for (SubTask elem : subTasks.values()) {
             if (newSubTask.getName().equals(elem.getName())) {

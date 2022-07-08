@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.main.managers.FileBackedTasksManager;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.java.managers.FileBackedTasksManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,8 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
-    private static final String BACKED_TASKS_TESTS_PATH = "resources/text-files/tasks1.csv";
+    private static final String BACKED_TASKS_TESTS_PATH = "src/ru/yandex/practicum/" +
+            "task_tracker/test/resources/tasks1.csv";
     private static final String ERROR_MESSAGE = "Ошибка чтения из файла во время теста.";
 
     @BeforeEach

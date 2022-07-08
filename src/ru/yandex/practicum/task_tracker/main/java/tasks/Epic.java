@@ -1,7 +1,4 @@
-package ru.yandex.practicum.task_tracker.main.tasks;
-
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskType.*;
+package ru.yandex.practicum.task_tracker.main.java.tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -43,7 +40,7 @@ public class Epic extends Task {
 
     @Override
     public TaskType getType() {
-        return EPIC;
+        return TaskType.EPIC;
     }
 
     @Override
@@ -96,22 +93,22 @@ public class Epic extends Task {
         int amountStatusNew = 0;
         int amountStatusDone = 0;
         for (SubTask subTask : getSubTasks()) {
-            if (subTask.getStatus().equals(IN_PROGRESS)) {
-                setStatus(IN_PROGRESS);
+            if (subTask.getStatus().equals(TaskStatus.IN_PROGRESS)) {
+                setStatus(TaskStatus.IN_PROGRESS);
             }
-            if (subTask.getStatus().equals(DONE)) {
+            if (subTask.getStatus().equals(TaskStatus.DONE)) {
                 amountStatusDone++;
             }
-            if (subTask.getStatus().equals(NEW)) {
+            if (subTask.getStatus().equals(TaskStatus.NEW)) {
                 amountStatusNew++;
             }
         }
         if (amountStatusDone == getSubTasks().size() && !getSubTasks().isEmpty()) {
-            setStatus(DONE);
+            setStatus(TaskStatus.DONE);
         } else if (amountStatusDone > 0 && amountStatusDone < getSubTasks().size()) {
-            setStatus(IN_PROGRESS);
+            setStatus(TaskStatus.IN_PROGRESS);
         } else if (getSubTasks().isEmpty() || amountStatusNew == getSubTasks().size()) {
-            setStatus(NEW);
+            setStatus(TaskStatus.NEW);
         }
     }
 

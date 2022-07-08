@@ -1,6 +1,4 @@
-package ru.yandex.practicum.task_tracker.main.tasks;
-
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskType.*;
+package ru.yandex.practicum.task_tracker.main.java.tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,7 +32,7 @@ public class SubTask extends Task {
 
     @Override
     public TaskType getType() {
-        return SUBTASK;
+        return TaskType.SUBTASK;
     }
 
     @Override

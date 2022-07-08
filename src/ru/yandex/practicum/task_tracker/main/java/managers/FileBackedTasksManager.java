@@ -1,10 +1,10 @@
-package ru.yandex.practicum.task_tracker.main.managers;
+package ru.yandex.practicum.task_tracker.main.java.managers;
 
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.java.tasks.TaskStatus.*;
 
-import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.main.tasks.*;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.java.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private static final String BACKED_TASKS_PATH = "resources/text-files/tasks.csv";
+    private static final String BACKED_TASKS_PATH = "src/ru/yandex/practicum/task_tracker/main/resources/tasks.csv";
     private static final String FILE_HEADER = "id,type,name,status,description,epic,startTime,duration,endTime";
     private final File file;
 

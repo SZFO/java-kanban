@@ -1,10 +1,13 @@
-package ru.yandex.practicum.task_tracker.main;
+package ru.yandex.practicum.task_tracker.main.java;
 
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.java.tasks.TaskStatus.*;
 
-import ru.yandex.practicum.task_tracker.main.managers.Managers;
-import ru.yandex.practicum.task_tracker.main.managers.TaskManager;
-import ru.yandex.practicum.task_tracker.main.tasks.*;
+import ru.yandex.practicum.task_tracker.main.java.managers.Managers;
+import ru.yandex.practicum.task_tracker.main.java.managers.TaskManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Epic;
+import ru.yandex.practicum.task_tracker.main.java.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Task;
+
 
 import java.io.PrintWriter;
 import java.time.Duration;

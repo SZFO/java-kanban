@@ -1,11 +1,14 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.task_tracker.main.exceptions.ManagerSaveException;
-import ru.yandex.practicum.task_tracker.main.managers.TaskManager;
-import ru.yandex.practicum.task_tracker.main.tasks.*;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.ManagerSaveException;
+import ru.yandex.practicum.task_tracker.main.java.exceptions.TaskValidationException;
+import ru.yandex.practicum.task_tracker.main.java.managers.TaskManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Epic;
+import ru.yandex.practicum.task_tracker.main.java.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
+import static ru.yandex.practicum.task_tracker.main.java.tasks.TaskStatus.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -77,7 +80,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     public void throwGetTaskWithIncorrectIdTest() {
         var exception = assertThrows(NullPointerException.class,
                 () -> manager.getTask(5));
-        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.tasks.Task.getId()\" " +
+        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.java.tasks.Task.getId()\" " +
                 "because \"element\" is null", exception.getMessage());
     }
 
@@ -96,7 +99,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     public void throwGetSubTaskWithIncorrectIdTest() {
         var exception = assertThrows(NullPointerException.class,
                 () -> manager.getSubTask(7));
-        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.tasks.Task.getId()\" " +
+        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.java.tasks.Task.getId()\" " +
                 "because \"element\" is null", exception.getMessage());
     }
 
@@ -112,7 +115,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     public void throwGetEpicWithIncorrectIdTest() {
         var exception = assertThrows(NullPointerException.class,
                 () -> manager.getEpic(10));
-        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.tasks.Task.getId()\" " +
+        assertEquals("Cannot invoke \"ru.yandex.practicum.task_tracker.main.java.tasks.Task.getId()\" " +
                 "because \"element\" is null", exception.getMessage());
     }
 
@@ -269,7 +272,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         temp.add(subTask1);
         temp.add(task1);
         temp.add(subTask2);
-        assertEquals(temp, manager.getPrioritizedTasks().stream().toList());
+        assertEquals(temp, new LinkedList<>((manager.getPrioritizedTasks())));
     }
 
     @Test
@@ -278,7 +281,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task2 = new Task("task2", "This is Task 2", IN_PROGRESS,
                 LocalDateTime.of(2022, 7, 1, 9, 20), Duration.ofMinutes(20));
         //  Время старта задачи №2 находится в интервале задачи №1
-        var exception1 = assertThrows(ManagerSaveException.class,
+        var exception1 = assertThrows(TaskValidationException.class,
                 () -> manager.addTask(task2));
         assertEquals("При создании задачи обнаружено пересечение по времени выполнения.",
                 exception1.getMessage());
@@ -290,7 +293,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.of(2022, 7, 1, 18, 30), Duration.ofMinutes(30));
         manager.addTask(task4);
         // Обновим задачу №4, указав новое описание и новое время старта, совпадающее с временем старта задачи №3
-        var exception2 = assertThrows(ManagerSaveException.class,
+        var exception2 = assertThrows(TaskValidationException.class,
                 () -> manager.updateTask(new Task(task4.getName(), "This is New SubTask 4", task4.getStatus(),
                         LocalDateTime.of(2022, 7, 1, 17, 10), task4.getDuration())));
         assertEquals("При обновлении задачи обнаружено пересечение по времени выполнения.",
@@ -306,7 +309,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         subTask2 = new SubTask("subTask2", "This is SubTask 2", DONE, epic1.getId(),
                 LocalDateTime.of(2022, 7, 2, 2, 15), Duration.ofMinutes(20));
         //  Время старта подзадачи №2 находится в интервале подзадачи №1
-        var exception1 = assertThrows(ManagerSaveException.class,
+        var exception1 = assertThrows(TaskValidationException.class,
                 () -> manager.addSubTask(subTask2));
         assertEquals("При создании подзадачи обнаружено пересечение по времени выполнения.",
                 exception1.getMessage());
@@ -318,7 +321,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.of(2022, 7, 2, 8, 0), Duration.ofMinutes(10));
         manager.addSubTask(subTask4);
         // Обновим подзадачу №4, указав новое описание и новое время старта, совпадающее с временем старта подзадачи №3
-        var exception2 = assertThrows(ManagerSaveException.class,
+        var exception2 = assertThrows(TaskValidationException.class,
                 () -> manager.updateSubTask(new SubTask(subTask4.getName(), "This is New SubTask 4",
                         subTask4.getStatus(), subTask4.getEpicId(),
                         LocalDateTime.of(2022, 7, 2, 6, 0),
@@ -327,7 +330,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 exception2.getMessage());
     }
 
-    protected void addSubTasks() {
+    public void addSubTasks() {
         manager.addEpic(epic1);
         subTask1 = new SubTask("subTask1", "This is SubTask 1", DONE, epic1.getId(),
                 LocalDateTime.of(2022, 7, 1, 2, 0), Duration.ofMinutes(60));

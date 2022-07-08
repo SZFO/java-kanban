@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task_tracker.main.tasks;
+package ru.yandex.practicum.task_tracker.main.java.tasks;
 
 import java.time.format.DateTimeFormatter;
 

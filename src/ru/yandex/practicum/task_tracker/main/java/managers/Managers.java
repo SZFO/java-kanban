@@ -1,7 +1,7 @@
-package ru.yandex.practicum.task_tracker.main.managers;
+package ru.yandex.practicum.task_tracker.main.java.managers;
 
-import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.main.history.InMemoryHistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.history.InMemoryHistoryManager;
 
 public class Managers {
     public static TaskManager getDefault() {

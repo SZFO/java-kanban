@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task_tracker.main.history;
+package ru.yandex.practicum.task_tracker.main.java.history;
 
 public class Node<E> {
     E data;

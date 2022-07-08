@@ -1,14 +1,16 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.task_tracker.main.history.HistoryManager;
-import ru.yandex.practicum.task_tracker.main.history.InMemoryHistoryManager;
-import ru.yandex.practicum.task_tracker.main.tasks.*;
+import ru.yandex.practicum.task_tracker.main.java.history.HistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.history.InMemoryHistoryManager;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Epic;
+import ru.yandex.practicum.task_tracker.main.java.tasks.SubTask;
+import ru.yandex.practicum.task_tracker.main.java.tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.NEW;
+import static ru.yandex.practicum.task_tracker.main.java.tasks.TaskStatus.NEW;
 
 public class HistoryManagerTest {
 

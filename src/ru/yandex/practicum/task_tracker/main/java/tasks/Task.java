@@ -1,7 +1,4 @@
-package ru.yandex.practicum.task_tracker.main.tasks;
-
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskStatus.*;
-import static ru.yandex.practicum.task_tracker.main.tasks.TaskType.*;
+package ru.yandex.practicum.task_tracker.main.java.tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,7 +16,7 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = NEW;
+        this.status = TaskStatus.NEW;
     }
 
     public Task(String name, String description, TaskStatus status) {
@@ -55,7 +52,7 @@ public class Task {
     }
 
     public TaskType getType() {
-        return TASK;
+        return TaskType.TASK;
     }
 
     public TaskStatus getStatus() {
