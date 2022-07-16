@@ -10,8 +10,9 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus status;
-    private Duration duration;
     private LocalDateTime startTime;
+    private Duration duration;
+    private LocalDateTime endTime;
 
     public Task(String name, String description) {
         this.name = name;
@@ -85,6 +86,10 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override

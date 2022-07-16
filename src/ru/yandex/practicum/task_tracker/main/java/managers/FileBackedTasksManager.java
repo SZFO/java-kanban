@@ -17,7 +17,7 @@ import java.util.*;
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private static final String BACKED_TASKS_PATH = "src/ru/yandex/practicum/task_tracker/main/resources/tasks.csv";
     private static final String FILE_HEADER = "id,type,name,status,description,epic,startTime,duration,endTime";
-    private final File file;
+    private File file;
 
     public static void main(String[] args) {
         FileBackedTasksManager fileBackedManager = FileBackedTasksManager.loadFromFile(new File(BACKED_TASKS_PATH));
@@ -37,7 +37,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager(File file) {
         this.file = file;
     }
-
+   public FileBackedTasksManager() {
+    }
     public void save() {
         Map<Integer, String> tasks = new HashMap<>();
         for (Task task : getAllTasks()) {
@@ -271,6 +272,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void deleteAllTasks() {
         super.deleteAllTasks();
+        save();
+    }
+
+    @Override
+    public void deleteAllSubTasks() {
+        super.deleteAllSubTasks();
+        save();
+    }
+
+    @Override
+    public void deleteAllEpics() {
+        super.deleteAllEpics();
         save();
     }
 }

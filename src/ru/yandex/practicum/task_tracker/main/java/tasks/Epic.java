@@ -5,25 +5,18 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Epic extends Task {
-    private Integer id;
+    private transient Integer id;
     private List<SubTask> subTasks;
-    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);
-        this.subTasks = new ArrayList<>();
-        this.endTime = getEndTime();
+        subTasks = new ArrayList<>();
     }
 
     public Epic(Integer id, String name, String description) {
         super(name, description);
         this.id = id;
-        this.subTasks = new ArrayList<>();
-        this.endTime = getEndTime();
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+        subTasks = new ArrayList<>();
     }
 
     public List<SubTask> getSubTasks() {

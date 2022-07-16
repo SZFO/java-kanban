@@ -21,16 +21,16 @@ public class InMemoryTaskManager implements TaskManager {
     private Set<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
-        this.id = 1;
-        this.tasks = new HashMap<>();
-        this.subTasks = new HashMap<>();
-        this.epics = new HashMap<>();
-        this.historyManager = Managers.getDefaultHistory();
+        id = 1;
+        tasks = new HashMap<>();
+        subTasks = new HashMap<>();
+        epics = new HashMap<>();
+        historyManager = Managers.getDefaultHistory();
         /* Изначально попробовал использовать предложенный компаратор Task::getStartTime, но он выводил задачи
         без времени первыми, а не последними. Затем полез в оф. документацию интерфейса и на stackoverflow,
         в итоге получилось, как по ТЗ.
          */
-        this.prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+        prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
                 Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
@@ -41,6 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         task.setId(generateId());
         tasks.put(task.getId(), task);
+        task.setEndTime(task.getEndTime());
         prioritizedTasks.add(task);
     }
 
@@ -48,6 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addEpic(Epic epic) {
         epic.setId(generateId());
         epics.put(epic.getId(), epic);
+        epic.calculateEpicStatus();
     }
 
     @Override
@@ -59,13 +61,18 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setEpicId(subTask.getEpicId());
         subTasks.put(num, subTask);
         subTask.setId(num);
-        epics.get(subTask.getEpicId()).addSubTasks(subTask);
-        epics.get(subTask.getEpicId()).calculateEpicStatus();
+        subTask.setEndTime(subTask.getEndTime());
+        Epic epic = epics.get(subTask.getEpicId());
+        epic.addSubTasks(subTask);
+        epicSetStatusAndTime(epic);
         prioritizedTasks.add(subTask);
     }
 
     @Override
     public Task getTask(Integer id) {
+        if (!tasks.containsKey(id)) {
+            throw new ManagerSaveException("Задача с указанным ID не обнаружена.");
+        }
         Map<Integer, Task> tempMap = new HashMap<>();
         historyManager.add(tasks.get(id));
         tempMap.put(id, tasks.get(id));
@@ -74,6 +81,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSubTask(Integer id) {
+        if (!subTasks.containsKey(id)) {
+            throw new ManagerSaveException("Подзадача с указанным ID не обнаружена.");
+        }
         Map<Integer, SubTask> tempMap = new HashMap<>();
         historyManager.add(subTasks.get(id));
         tempMap.put(id, subTasks.get(id));
@@ -82,6 +92,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(Integer id) {
+        if (!epics.containsKey(id)) {
+            throw new ManagerSaveException("Эпик с указанным ID не обнаружен.");
+        }
         Map<Integer, Epic> tempMap = new HashMap<>();
         historyManager.add(epics.get(id));
         tempMap.put(id, epics.get(id));
@@ -98,6 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
                 prioritizedTasks.remove(elem);
                 task.setId(elem.getId());
                 tasks.put(task.getId(), task);
+                task.setEndTime(task.getEndTime());
                 prioritizedTasks.add(task);
             }
         }
@@ -119,12 +133,13 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.remove(oldSubTask.getId());
 
         subTasks.put(newSubTask.getId(), newSubTask);
+        newSubTask.setEndTime(newSubTask.getEndTime());
         prioritizedTasks.add(newSubTask);
         if (epic.getSubTasks().contains(oldSubTask)) {
             epic.getSubTasks().remove(oldSubTask);
             epic.getSubTasks().add(newSubTask);
         }
-        epic.calculateEpicStatus();
+        epicSetStatusAndTime(epic);
     }
 
     @Override
@@ -166,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.remove(id);
         historyManager.remove(id);
         epic.getSubTasks().remove(oldSubTask);
-        epic.calculateEpicStatus();
+        epicSetStatusAndTime(epic);
     }
 
     @Override
@@ -184,8 +199,32 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        prioritizedTasks.clear();
+        for (int taskId : tasks.keySet()) {
+            historyManager.remove(taskId);
+        }
         tasks.clear();
+    }
+
+    @Override
+    public void deleteAllSubTasks() {
+        for (Epic epic : epics.values()) {
+            epic.getSubTasks().clear();
+            epicSetStatusAndTime(epic);
+        }
+        for (int subId : subTasks.keySet()) {
+            historyManager.remove(subId);
+        }
+        subTasks.clear();
+    }
+
+    @Override
+    public void deleteAllEpics() {
+        for (int epicId : epics.keySet()) {
+            for (int subId : subTasks.keySet()) {
+                historyManager.remove(subId);
+            }
+            historyManager.remove(epicId);
+        }
         subTasks.clear();
         epics.clear();
     }
@@ -219,6 +258,18 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks;
     }
 
+    public Map<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    public Map<Integer, SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public Map<Integer, Epic> getEpics() {
+        return epics;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -239,8 +290,27 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager;
     }
 
+    public void setTasks(Map<Integer, Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setSubTasks(Map<Integer, SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
+
+    public void setEpics(Map<Integer, Epic> epics) {
+        this.epics = epics;
+    }
+
     private Integer generateId() {
         return id++;
+    }
+
+    private void epicSetStatusAndTime(Epic epic) {
+        epic.calculateEpicStatus();
+        epic.setStartTime(epic.getStartTime());
+        epic.setDuration(epic.getDuration());
+        epic.setEndTime(epic.getEndTime());
     }
 
     private final Predicate<Task> intersectionsDetected = newTask -> {

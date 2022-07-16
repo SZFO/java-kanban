@@ -5,7 +5,7 @@ import ru.yandex.practicum.task_tracker.main.java.history.InMemoryHistoryManager
 
 public class Managers {
     public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+        return new HTTPTaskManager("http://localhost:8078/");
     }
 
     public static HistoryManager getDefaultHistory() {
